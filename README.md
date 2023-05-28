@@ -59,15 +59,22 @@ Here are some examples of how you can use the TailwindCSS Template Card to creat
 
 ## Example 1
 
-![Screenshot from 2023-05-28 00-29-30](https://github.com/usernein/tailwindcss-template-card/assets/29507335/b5df7254-adb3-4b74-9400-7359f209fd3e)
+![Screenshot from 2023-05-28 10-09-04](https://github.com/usernein/tailwindcss-template-card/assets/29507335/82a62790-05c7-4e12-8aee-c48a10d33886)
 
 ```yaml
 type: custom:tailwindcss-template-card
 content: |
-  <div class="bg-slate-300 p-4 rounded-lg shadow-md">
-    <h2 class="text-xl text-black font-semibold mb-2">My Custom Card</h2>
-    <p class="text-gray-700">This is a custom card created using HTML and TailwindCSS classes.</p>
-    <button class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded">Click Me</button>
+  <div class="relative bg-zinc-900 rounded-3xl overflow-clip">
+    <img src="https://picsum.photos/600/400" class="w-full contrast-75 opacity-50" />
+    <div class="absolute top-2/4 transition-all hover:top-0 h-full duration-500 px-8 py-4 bg-zinc-400 bg-opacity-25">
+      <div class="font-bold text-3xl">Title</div>
+      <div class="mt-3 font-medium text-sm">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in quam semper, vestibulum velit ut, faucibus est. Suspendisse commodo, tortor et varius pretium, est tortor mollis mauris, in fringilla felis arcu quis lacus. Aenean placerat risus sed nulla egestas, quis pellentesque tortor ultrices. Cras vel sem eu libero commodo tempus. Pellentesque mi erat, mattis id lectus nec, ullamcorper porta sapien.
+      </div>
+      <div class="cursor-pointer absolute bottom-5 left-1/2 -translate-x-1/2 items-center rounded-md w-24 h-10 bg-sky-800 hover:bg-sky-900 flex justify-center">
+        Click me
+      </div>
+    </div>
   </div>
 ```
 
