@@ -53,25 +53,25 @@ To use the TailwindCSS Template Card, follow these steps:
 4. In the card configuration, you can define your HTML code using TailwindCSS classes to style the elements.
 5. Save the configuration and enjoy your custom-designed card in your Home Assistant dashboard.
 
-## Example
+## Examples
 
 Here are some examples of how you can use the TailwindCSS Template Card to create beautiful cards in your Home Assistant dashboard:
 
 ## Example 1
 
-![card_lite](https://github.com/usernein/tailwindcss-template-card/assets/29507335/9db4adb4-0861-4acd-8add-152e706a1400)
+![card_lite](https://github.com/usernein/tailwindcss-template-card/assets/29507335/a12fc60c-a339-4ce3-b993-5f939f7a1a3d)
 
 ```yaml
 type: custom:tailwindcss-template-card
-content: |
-  <div class="relative bg-zinc-900 rounded-3xl overflow-clip">
-    <img src="https://picsum.photos/600/400" class="w-full contrast-75 opacity-50" />
-    <div class="absolute top-2/4 transition-all hover:top-0 h-full duration-500 px-8 py-4 bg-zinc-400 bg-opacity-25">
+content: >
+  <div class="bg-zinc-900 rounded-3xl overflow-clip flex flex-col
+  bg-[url('https://picsum.photos/600/400')] bg-cover bg-center">
+    <div class="flex flex-col transition-all translate-y-1/2 hover:translate-y-0 h-full duration-500 px-8 py-4 bg-zinc-700 bg-opacity-50">
       <div class="font-bold text-3xl">Title</div>
       <div class="mt-3 font-medium text-sm">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in quam semper, vestibulum velit ut, faucibus est. Suspendisse commodo, tortor et varius pretium, est tortor mollis mauris, in fringilla felis arcu quis lacus. Aenean placerat risus sed nulla egestas, quis pellentesque tortor ultrices. Cras vel sem eu libero commodo tempus. Pellentesque mi erat, mattis id lectus nec, ullamcorper porta sapien.
       </div>
-      <div class="cursor-pointer absolute bottom-5 left-1/2 -translate-x-1/2 items-center rounded-md w-24 h-10 bg-sky-800 hover:bg-sky-900 flex justify-center">
+      <div class="self-center transition-all cursor-pointer items-center rounded-xl w-24 h-10 mt-2 bg-zinc-700 hover:scale-105 hover:brightness-90 flex justify-center">
         Click me
       </div>
     </div>
