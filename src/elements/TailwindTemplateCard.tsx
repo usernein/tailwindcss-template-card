@@ -9,8 +9,8 @@ import 'construct-style-sheets-polyfill'
 console.info(
   `%c  TailwindCSS Template Card  \n%c  Version ${CARD_VERSION}  `,
   'color: cyan; font-weight: bold; background: black',
-  'color: white; font-weight: bold; background: dimgray',
-);
+  'color: white; font-weight: bold; background: dimgray'
+)
 
 export class TailwindTemplateCard extends HTMLElement {
   _hass: HomeAssistant | undefined
@@ -35,8 +35,8 @@ export class TailwindTemplateCard extends HTMLElement {
     return {
       ignore_line_breaks: true,
       always_update: false,
-      content: `<div class="w-32 h-32 bg-blue-900 rounded-3xl flex justify-center items-center animate-pulse hover:scale-150 transition-all">\nHello, World!\n</div>`,
-      entities: ["sun.sun"]
+      content: `<div class="w-32 h-32 bg-blue-900 rounded-3xl flex justify-center items-center animate-pulse hover:scale-150 transition-all">Hello, World!</div>`,
+      entities: ['sun.sun']
     }
   }
 
@@ -118,7 +118,10 @@ export class TailwindTemplateCard extends HTMLElement {
 
     let content = this._config.content
 
-    if (!this._config.ignore_line_breaks) {
+    if (
+      undefined !== this._config.ignore_line_breaks &&
+      !this._config.ignore_line_breaks
+    ) {
       content = content.replace(/\r?\n|\r/g, '</br>')
     }
 
@@ -139,12 +142,7 @@ export class TailwindTemplateCard extends HTMLElement {
   _render (htmlContent: string) {
     this.ensureIsReadyForRender()
 
-    render(
-      <HaCard
-        htmlContent={htmlContent}
-      />,
-      this.shadow
-    )
+    render(<HaCard htmlContent={htmlContent} />, this.shadow)
   }
 
   ensureIsReadyForRender () {
