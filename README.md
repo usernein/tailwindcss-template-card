@@ -59,7 +59,7 @@ Here are some examples of how you can use the TailwindCSS Template Card to creat
 
 ## Example 1
 
-![Screenshot from 2023-05-28 10-09-04](https://github.com/usernein/tailwindcss-template-card/assets/29507335/82a62790-05c7-4e12-8aee-c48a10d33886)
+![card_lite](https://github.com/usernein/tailwindcss-template-card/assets/29507335/9db4adb4-0861-4acd-8add-152e706a1400)
 
 ```yaml
 type: custom:tailwindcss-template-card
@@ -80,7 +80,7 @@ content: |
 
 ## Example 2
 
-![Screenshot from 2023-05-28 00-29-43](https://github.com/usernein/tailwindcss-template-card/assets/29507335/45e8dc7f-ee3e-47e5-870b-6e4b8ec78569)
+![smile](https://github.com/usernein/tailwindcss-template-card/assets/29507335/324dd30a-81f1-4be1-b8e8-6447aeba4b3c)
 
 ```yaml
 type: custom:tailwindcss-template-card
@@ -93,7 +93,7 @@ content: |
 
 ## Example 3
 
-![Screenshot from 2023-05-28 00-29-53](https://github.com/usernein/tailwindcss-template-card/assets/29507335/223aa226-7e5f-496a-b025-7146e26a5bfc)
+![colors](https://github.com/usernein/tailwindcss-template-card/assets/29507335/03ee18c1-8a0d-4ec4-bdcf-915c46fc3086)
 
 ```yaml
 type: custom:tailwindcss-template-card
@@ -107,7 +107,7 @@ content: |
 
 ## Example 4
 
-![Screenshot from 2023-05-28 00-59-39](https://github.com/usernein/tailwindcss-template-card/assets/29507335/71e85db0-aa96-47e7-a4c0-0d2bd87b7a30)
+![sun](https://github.com/usernein/tailwindcss-template-card/assets/29507335/068a7039-6aee-4a98-bbbc-4a047a5257ee)
 
 ```yaml
 type: custom:tailwindcss-template-card
