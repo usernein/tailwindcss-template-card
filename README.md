@@ -7,7 +7,7 @@
 
 The TailwindCSS Template Card is a custom card for Home Assistant that allows you to write HTML code using TailwindCSS classes and render it beautifully in the Home Assistant dashboard. This card provides flexibility in designing custom interfaces within Home Assistant, allowing you to create visually appealing and interactive elements.
 
-![Screenshot from 2023-05-28 00-27-09](https://github.com/usernein/tailwindcss-template-card/assets/29507335/70aeea39-ec94-4cf2-aad1-54c95f44fe12)
+![Screenshot from 2023-05-28 12-41-19](https://github.com/usernein/tailwindcss-template-card/assets/29507335/e5764d60-b4e6-46a1-a873-bc296ef5856e)
 
 ## Features
 
