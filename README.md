@@ -7,6 +7,8 @@
 
 The TailwindCSS Template Card is a custom card for Home Assistant that allows you to write HTML code using TailwindCSS classes and render it beautifully in the Home Assistant dashboard. This card provides flexibility in designing custom interfaces within Home Assistant, allowing you to create visually appealing and interactive elements.
 
+![Screenshot from 2023-05-28 00-27-09](https://github.com/usernein/tailwindcss-template-card/assets/29507335/70aeea39-ec94-4cf2-aad1-54c95f44fe12)
+
 ## Features
 
 - **HTML Rendering**: Write HTML code directly in your Home Assistant configuration, utilizing the power of HTML and TailwindCSS.
@@ -52,7 +54,11 @@ To use the TailwindCSS Template Card, follow these steps:
 
 ## Example
 
-Here's some example of how you can use the TailwindCSS Template Card to create beautiful cards in your Home Assistant dashboard:
+Here are some examples of how you can use the TailwindCSS Template Card to create beautiful cards in your Home Assistant dashboard:
+
+## Example 1
+
+![Screenshot from 2023-05-28 00-29-30](https://github.com/usernein/tailwindcss-template-card/assets/29507335/b5df7254-adb3-4b74-9400-7359f209fd3e)
 
 ```yaml
 type: custom:tailwindcss-template-card
@@ -62,8 +68,11 @@ content: |
     <p class="text-gray-700">This is a custom card created using HTML and TailwindCSS classes.</p>
     <button class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded">Click Me</button>
   </div>
-
 ```
+
+## Example 2
+
+![Screenshot from 2023-05-28 00-29-43](https://github.com/usernein/tailwindcss-template-card/assets/29507335/45e8dc7f-ee3e-47e5-870b-6e4b8ec78569)
 
 ```yaml
 type: custom:tailwindcss-template-card
@@ -72,10 +81,26 @@ content: |
   <div class="m-auto rotate-90 text-3xl w-32 h-32 bg-sky-900 rounded-3xl flex justify-center items-center hover:scale-110 transition-all">
     :)
   </div>
-
 ```
 
-In this example, we have created a card with a gray background, rounded corners, and a shadow. It contains a title, a description, and a button styled with TailwindCSS classes.
+## Example 3
+
+![Screenshot from 2023-05-28 00-29-53](https://github.com/usernein/tailwindcss-template-card/assets/29507335/223aa226-7e5f-496a-b025-7146e26a5bfc)
+
+```yaml
+type: custom:tailwindcss-template-card
+content: |
+  <div
+    class="flex flex-row justify-center items-center gap-2">
+    <div class="w-12 h-12 bg-slate-300 rounded-lg cursor-pointer hover:translate-y-2 transition-all"></div>
+    <div class="w-12 h-12 bg-red-300 rounded-lg cursor-pointer hover:translate-y-2 transition-all"></div>
+    <div class="w-12 h-12 bg-purple-300 rounded-lg cursor-pointer hover:translate-y-2 transition-all"></div>
+    <div class="w-12 h-12 bg-cyan-300 rounded-lg cursor-pointer hover:translate-y-2 transition-all"></div>
+    <div class="w-12 h-12 bg-blue-300 rounded-lg cursor-pointer hover:translate-y-2 transition-all"></div>
+    <div class="w-12 h-12 bg-green-300 rounded-lg cursor-pointer hover:translate-y-2 transition-all"></div>
+    <div class="w-12 h-12 bg-yellow-300 rounded-lg cursor-pointer hover:translate-y-2 transition-all"></div>
+  </div>
+```
 
 ## Acknowledgements
 
