@@ -14,7 +14,8 @@ The TailwindCSS Template Card is a custom card for Home Assistant that allows yo
 - **HTML Rendering**: Write HTML code directly in your Home Assistant configuration, utilizing the power of HTML and TailwindCSS.
 - **TailwindCSS Classes**: Use TailwindCSS classes to style your HTML elements, giving you access to a wide range of pre-built styles and responsive design options.
 - **Responsive Design**: Leverage the responsiveness of TailwindCSS to create layouts that adapt to different screen sizes and devices.
-- **Interactive Elements**: Create interactive elements with JavaScript and CSS within your HTML code, enhancing the user experience of your Home Assistant dashboard.
+- **Interactive Elements**: Create interactive elements with CSS within your HTML code, enhancing the user experience of your Home Assistant dashboard.
+- **Real-time Preview**: Write your HTML code with TailwindCSS classes and instantly see it rendered with the power of [Twind.style](https://twind.style)
 
 ## Demo
 
