@@ -102,7 +102,7 @@ content: |
     {% for color in ["slate", "red", "purple", "cyan", "blue", "green", "yellow"] %}
       <div class="w-12 h-12 bg-{{color}}-300 rounded-lg cursor-pointer hover:translate-y-2 transition-all"></div>
     {% endfor %}
-    </div>
+  </div>
 ```
 
 ## Example 4
