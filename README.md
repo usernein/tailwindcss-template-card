@@ -107,6 +107,26 @@ content: |
 
 ## Example 4
 
+![grid_lite](https://github.com/usernein/tailwindcss-template-card/assets/29507335/811a400b-1e56-4b42-895d-96531f11580a)
+
+```yaml
+type: custom:tailwindcss-template-card
+content: |
+  <div class="flex flex-col justify-center items-center">
+  {% for n in range(1,10) %}
+    <div class="flex">
+    {% for color in ["zinc", "slate", "red", "orange", "purple", "cyan", "blue", "green", "yellow"] %}
+    <div class="p-1 hover:scale-150 transition-all">
+      <div class="w-12 h-12 bg-{{color}}-{{n}}00 rounded-lg cursor-pointer"></div>
+    </div>
+    {% endfor %}
+    </div>
+  {% endfor %}
+  </div>
+```
+
+## Example 5
+
 ![sun](https://github.com/usernein/tailwindcss-template-card/assets/29507335/068a7039-6aee-4a98-bbbc-4a047a5257ee)
 
 ```yaml
