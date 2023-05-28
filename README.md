@@ -102,6 +102,22 @@ content: |
   </div>
 ```
 
+## Example 4
+
+![Screenshot from 2023-05-28 00-59-39](https://github.com/usernein/tailwindcss-template-card/assets/29507335/71e85db0-aa96-47e7-a4c0-0d2bd87b7a30)
+
+```yaml
+type: custom:tailwindcss-template-card
+content: |
+  <div class="relative h-48 bg-sky-300 rounded-3xl text-black">
+    <div class="absolute top-1/3 left-10 h-24 w-24 rounded-full bg-yellow-300 animate-bounce"></div>
+    <div class="absolute right-10 top-2/4 -translate-y-2/4 text-black font-bold">
+      The sun is {{ states('sun.sun') }}
+      <div class="text-slate-700 font-medium">Rising: {{ 'yes' if state_attr('sun.sun', 'rising') else 'no'}} </div>
+    </div>
+  </div>
+```
+
 ## Acknowledgements
 
 I would like to extend my sincere gratitude to the following projects, libraries, and individuals for their contributions and inspiration:
