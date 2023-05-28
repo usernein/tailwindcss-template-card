@@ -1,0 +1,6 @@
+{
+  "verbose": true,
+  "ext": "ts,js,tsx,jsx,html,css",
+  "ignore": ["**/node_modules/**", "**/dist/**"],
+  "exec": "npm run build && npx http-server --cors='*' -c-1 ./dist"
+}
