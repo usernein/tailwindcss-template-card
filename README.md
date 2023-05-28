@@ -16,6 +16,10 @@ The TailwindCSS Template Card is a custom card for Home Assistant that allows yo
 
 ## Demo
 
+https://github.com/usernein/tailwindcss-template-card/assets/29507335/752667e7-df4a-4c73-a151-e03c7fc67ba7
+
+https://github.com/usernein/tailwindcss-template-card/assets/29507335/c0c1e086-f76e-4908-beed-79e747bcc15c
+
 ## Installation
 
 ### With HACS
