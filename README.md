@@ -98,16 +98,11 @@ content: |
 ```yaml
 type: custom:tailwindcss-template-card
 content: |
-  <div
-    class="flex flex-row justify-center items-center gap-2">
-    <div class="w-12 h-12 bg-slate-300 rounded-lg cursor-pointer hover:translate-y-2 transition-all"></div>
-    <div class="w-12 h-12 bg-red-300 rounded-lg cursor-pointer hover:translate-y-2 transition-all"></div>
-    <div class="w-12 h-12 bg-purple-300 rounded-lg cursor-pointer hover:translate-y-2 transition-all"></div>
-    <div class="w-12 h-12 bg-cyan-300 rounded-lg cursor-pointer hover:translate-y-2 transition-all"></div>
-    <div class="w-12 h-12 bg-blue-300 rounded-lg cursor-pointer hover:translate-y-2 transition-all"></div>
-    <div class="w-12 h-12 bg-green-300 rounded-lg cursor-pointer hover:translate-y-2 transition-all"></div>
-    <div class="w-12 h-12 bg-yellow-300 rounded-lg cursor-pointer hover:translate-y-2 transition-all"></div>
-  </div>
+  <div class="flex flex-row justify-center items-center gap-2">
+    {% for color in ["slate", "red", "purple", "cyan", "blue", "green", "yellow"] %}
+      <div class="w-12 h-12 bg-{{color}}-300 rounded-lg cursor-pointer hover:translate-y-2 transition-all"></div>
+    {% endfor %}
+    </div>
 ```
 
 ## Example 4
