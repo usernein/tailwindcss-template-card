@@ -107,7 +107,7 @@ content: |
 
 ## Example 4
 
-![grid_lite](https://github.com/usernein/tailwindcss-template-card/assets/29507335/811a400b-1e56-4b42-895d-96531f11580a)
+![grid_lite](https://github.com/usernein/tailwindcss-template-card/assets/29507335/71931bf2-1d1f-491c-bf18-32feb6e8ccfa)
 
 ```yaml
 type: custom:tailwindcss-template-card
