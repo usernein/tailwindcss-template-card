@@ -54,6 +54,8 @@ export class TailwindTemplateCard extends HTMLElement {
     this._oldHass = this._hass
     this._hass = hass
 
+    window.hass = hass
+
     this.updateEntitiesToWatch()
     this.renderIfNeeded()
   }

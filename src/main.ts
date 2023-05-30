@@ -1,8 +1,6 @@
 import './index.css'
+import './types/index.d.ts'
 import { TailwindTemplateCard } from './elements/TailwindTemplateCard'
-import { HassWindow } from './types/HassWindow'
-
-declare let window: HassWindow
 
 customElements.define('tailwindcss-template-card', TailwindTemplateCard)
 
