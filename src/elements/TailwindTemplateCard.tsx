@@ -3,8 +3,10 @@ import { render } from 'preact'
 import { HaCard } from '../components/HaCard'
 import config from '../../twind.config'
 import { twind, cssom, observe } from '@twind/core'
+
 // support shadowroot.adoptedStyleSheets in all browsers
 import 'construct-style-sheets-polyfill'
+import axios from 'axios'
 
 console.info(
   `%c  TailwindCSS Template Card  \n%c  Version ${CARD_VERSION}  `,
@@ -25,9 +27,15 @@ export class TailwindTemplateCard extends HTMLElement {
     this.shadow = this.attachShadow({ mode: 'open' })
 
     const sheet = cssom(new CSSStyleSheet())
-
     const tw = twind(config, sheet)
-    this.shadow.adoptedStyleSheets = [sheet.target]
+
+    const daisySheet = cssom(new CSSStyleSheet())
+    const daisyCDN = 'https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css'
+    axios.get(daisyCDN).then(res => {
+      daisySheet.target.replaceSync(res.data)
+    })
+
+    this.shadow.adoptedStyleSheets = [daisySheet.target, sheet.target]
     observe(tw, this.shadow)
   }
 
