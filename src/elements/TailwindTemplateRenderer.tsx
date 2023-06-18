@@ -13,6 +13,7 @@ export class TailwindTemplateRenderer extends HTMLElement {
   _hass: HomeAssistant | undefined
   _oldHass: HomeAssistant | undefined
   _config: Partial<ConfigState> = {}
+  _oldConfig: Partial<ConfigState> = {}
   shadow: ShadowRoot
   _force_daisyui: boolean = false
   _ignore_broken_config = false
@@ -24,13 +25,7 @@ export class TailwindTemplateRenderer extends HTMLElement {
   }
 
   setConfig (config: Partial<ConfigState>) {
-    const inSetup = this._config === undefined
-    const pluginsConfigHasChanged =  (this._config.plugins !== config.plugins)
-
-    if (inSetup || pluginsConfigHasChanged) {
-      this.injectStylesheets(config)
-    }
-
+    this._oldConfig = this._config
     this._config = config
 
     const event = new CustomEvent('tailwindcss-template-card-config-received', {
@@ -39,8 +34,18 @@ export class TailwindTemplateRenderer extends HTMLElement {
       detail: { config }
     })
     window.dispatchEvent(event)
-
+    
+    this.injectStylesheetsIfNeeded()
     this._render()
+  }
+
+  injectStylesheetsIfNeeded () {
+    const inSetup = this._config === undefined
+    const pluginsConfigHasChanged =  (this._config.plugins !== this._oldConfig.plugins)
+
+    if (inSetup || pluginsConfigHasChanged) {
+      this.injectStylesheets(this._config)
+    }
   }
 
   injectStylesheets ({ plugins }: Partial<ConfigState>) {
@@ -82,6 +87,7 @@ export class TailwindTemplateRenderer extends HTMLElement {
 
     window.hass = hass
 
+    this.injectStylesheetsIfNeeded()
     this._render()
   }
 
