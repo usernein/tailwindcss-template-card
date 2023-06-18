@@ -1,71 +1,32 @@
-import { HomeAssistant } from 'custom-card-helpers'
 import { render } from 'preact'
 import { HaCard } from '../components/HaCard'
-import config from '../../twind.config'
-import { twind, cssom, observe } from '@twind/core'
 
 // support shadowroot.adoptedStyleSheets in all browsers
 import 'construct-style-sheets-polyfill'
-import axios from 'axios'
+import { TailwindTemplateRenderer } from './TailwindTemplateRenderer'
+import { initialConfigState } from '../store/ConfigReducer'
 
 console.info(
-  `%c  TailwindCSS Template Card  \n%c  Version ${CARD_VERSION}  `,
-  'color: cyan; font-weight: bold; background: black',
-  'color: white; font-weight: bold; background: dimgray'
+  `%c  TailwindCSS Template Card  \n%c  Version ${CARD_VERSION}  \n%c  Star it at http://github.com/usernein/tailwindcss-template-card!`,
+  'color: #2d2c35; font-weight: bold; background: #f5f6f9',
+  'color: #aef3fc; font-weight: bold; background: #2d2c35',
+  'color: #aef3fc; font-weight: bold; background: #2d2c35'
 )
 
-export class TailwindTemplateCard extends HTMLElement {
-  _hass: HomeAssistant | undefined
-  _oldHass: HomeAssistant | undefined
-  _config: any
+export class TailwindTemplateCard extends TailwindTemplateRenderer {
   _entitiesToWatch: string[] = []
-  shadow: ShadowRoot
+  _htmlContent: string = ''
 
   constructor () {
     super()
+  }
 
-    this.shadow = this.attachShadow({ mode: 'open' })
-
-    const sheet = cssom(new CSSStyleSheet())
-    const tw = twind(config, sheet)
-
-    const daisySheet = cssom(new CSSStyleSheet())
-    const daisyCDN = 'https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css'
-    axios.get(daisyCDN).then(res => {
-      daisySheet.target.replaceSync(res.data)
-    })
-
-    this.shadow.adoptedStyleSheets = [daisySheet.target, sheet.target]
-    observe(tw, this.shadow)
+  static getConfigElement () {
+    return document.createElement('tailwindcss-template-card-config')
   }
 
   static getStubConfig () {
-    return {
-      ignore_line_breaks: true,
-      always_update: false,
-      content: `<div class="w-32 h-32 bg-blue-900 rounded-3xl flex justify-center items-center animate-pulse hover:scale-150 transition-all">Hello, World!</div>`,
-      entities: ['sun.sun']
-    }
-  }
-
-  setConfig (config: any) {
-    if (!config.content) {
-      throw new Error('The field content is required')
-    }
-    this._config = config
-
-    this.updateEntitiesToWatch()
-    this.renderIfNeeded()
-  }
-
-  public set hass (hass: HomeAssistant) {
-    this._oldHass = this._hass
-    this._hass = hass
-
-    window.hass = hass
-
-    this.updateEntitiesToWatch()
-    this.renderIfNeeded()
+    return initialConfigState
   }
 
   updateEntitiesToWatch () {
@@ -81,10 +42,12 @@ export class TailwindTemplateCard extends HTMLElement {
   }
 
   watchMentionedEntities () {
-    if (!this._hass) return
+    if (!this._hass || !this._config || this._config.content === undefined)
+      return
 
     Object.keys(this._hass.states).forEach((entity_id: string) => {
-      if (!this._hass) return
+      if (!this._hass || !this._config || this._config.content === undefined)
+        return
 
       if (this._config.content.includes(entity_id)) {
         this._entitiesToWatch.push(entity_id)
@@ -124,7 +87,8 @@ export class TailwindTemplateCard extends HTMLElement {
   }
 
   processAndRender () {
-    if (!this._hass) return
+    if (!this._hass || !this._config || this._config.content == undefined)
+      return
 
     let content = this._config.content
 
@@ -135,13 +99,17 @@ export class TailwindTemplateCard extends HTMLElement {
       content = content.replace(/\r?\n|\r/g, '</br>')
     }
 
-    if (this._config.do_not_parse) {
-      this._render(content)
+    if (!this._config.parse_jinja) {
+      this._htmlContent = content
+      this._renderHtmlContent()
       return
     }
 
     this._hass.connection.subscribeMessage(
-      (msg: { result: string }) => this._render(msg.result),
+      (msg: { result: string }) => {
+        this._htmlContent = msg.result
+        this._renderHtmlContent()
+      },
       {
         type: 'render_template',
         template: content
@@ -149,30 +117,32 @@ export class TailwindTemplateCard extends HTMLElement {
     )
   }
 
-  _render (htmlContent: string) {
+  _render () {
+    this.updateEntitiesToWatch()
+    this.renderIfNeeded()
+  }
+
+  _renderHtmlContent () {
     this.ensureIsReadyForRender()
 
-    render(<HaCard htmlContent={htmlContent} />, this.shadow)
+    render(
+      <HaCard htmlContent={this._htmlContent} config={this._config} />,
+      this.shadow
+    )
   }
 
   ensureIsReadyForRender () {
     if (!this._hass) {
       throw new Error('this._hass is invalid')
     }
-    if (!this._config) {
+    if (this._config === undefined) {
       throw new Error('this.config is invalid')
     }
-    if (!this._config.content) {
+    if (this._config.content === undefined) {
       throw new Error('this.config.content is invalid')
     }
     if (!this.shadow) {
       throw new Error('this.shadow is invalid')
     }
-  }
-
-  _deRender () {
-    this.shadow.innerHTML = ''
-
-    render('', this.shadow)
   }
 }
