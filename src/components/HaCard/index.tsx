@@ -1,8 +1,16 @@
-export function HaCard ({ htmlContent }: { htmlContent: string }) {
+import { ConfigState } from '../../store/ConfigReducer'
+
+export function HaCard ({
+  htmlContent,
+  config
+}: {
+  htmlContent: string
+  config: Partial<ConfigState>
+}) {
   return (
     <>
       {/* @ts-ignore */}
-      <ha-card>
+      <ha-card data-theme={config.plugins.daisyui.theme}>
         <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
         {/* @ts-ignore */}
       </ha-card>
