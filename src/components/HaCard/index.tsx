@@ -10,7 +10,7 @@ export function HaCard ({
   return (
     <>
       {/* @ts-ignore */}
-      <ha-card data-theme={config.plugins.daisyui.theme}>
+      <ha-card data-theme={config.plugins?.daisyui?.theme || "auto"}>
         <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
         {/* @ts-ignore */}
       </ha-card>
