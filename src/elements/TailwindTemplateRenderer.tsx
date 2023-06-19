@@ -34,13 +34,13 @@ export class TailwindTemplateRenderer extends HTMLElement {
       detail: { config }
     })
     window.dispatchEvent(event)
-    
+
     this.injectStylesheetsIfNeeded()
     this._render()
   }
 
   injectStylesheetsIfNeeded () {
-    const inSetup = this._config === undefined
+    const inSetup = Object.keys(this._oldConfig).length === 0
     const pluginsConfigHasChanged =  (this._config.plugins !== this._oldConfig.plugins)
 
     if (inSetup || pluginsConfigHasChanged) {
@@ -64,9 +64,9 @@ export class TailwindTemplateRenderer extends HTMLElement {
       })
     }
 
-    if (!plugins || this._force_daisyui || plugins.daisyui.enabled) {
+    if (!plugins || this._force_daisyui || plugins.daisyui?.enabled) {
       const daisySheet = cssom(new CSSStyleSheet())
-      const daisyCDN = plugins?.daisyui.url || DAISYUI_CDN_URL
+      const daisyCDN = plugins?.daisyui?.url || DAISYUI_CDN_URL
       axios.get(daisyCDN).then(res => {
         daisySheet.target.replaceSync(res.data)
       })
@@ -74,8 +74,6 @@ export class TailwindTemplateRenderer extends HTMLElement {
     }
 
     adoptedStyleSheets.push(sheet.target)
-
-    console.debug({ class: this.constructor.name, adoptedStyleSheets })
 
     this.shadow.adoptedStyleSheets = adoptedStyleSheets
     observe(tw, this.shadow)
@@ -87,7 +85,6 @@ export class TailwindTemplateRenderer extends HTMLElement {
 
     window.hass = hass
 
-    this.injectStylesheetsIfNeeded()
     this._render()
   }
 

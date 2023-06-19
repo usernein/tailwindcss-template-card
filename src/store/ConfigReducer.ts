@@ -27,7 +27,6 @@ export const ConfigReducer = (
 ) => {
   switch (action.action_type) {
     case ConfigActionTypes.SET_CONFIG:
-      console.debug(action)
       const newConfig = { ...state, ...action.payload }
 
       if (action.dispatch_event) {
