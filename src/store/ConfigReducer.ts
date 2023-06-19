@@ -17,8 +17,9 @@ export type ConfigState = {
   entities: string[]
   parse_jinja: boolean
   plugins: {
-    [key: string]: { enabled: boolean; url: string, theme: string }
+    [key: string]: { enabled: boolean; url?: string; theme?: string }
   }
+  use_textarea_editor: boolean
 }
 
 export const ConfigReducer = (
@@ -27,7 +28,7 @@ export const ConfigReducer = (
 ) => {
   switch (action.action_type) {
     case ConfigActionTypes.SET_CONFIG:
-      const newConfig = { ...state, ...action.payload }
+      const newConfig = { ...state, ...action.payload } as ConfigState
 
       if (action.dispatch_event) {
         const event = new CustomEvent(
@@ -47,19 +48,30 @@ export const ConfigReducer = (
   }
 }
 
-export const initialConfigState: ConfigState = {
+export const defaultConfigState: ConfigState = {
+  content: '',
   ignore_line_breaks: true,
   always_update: false,
-  content: `<div class="w-32 h-32 bg-blue-900 rounded-3xl flex justify-center items-center animate-pulse hover:scale-150 transition-all">Hello, World!</div>`,
-  entities: ['sun.sun'],
   parse_jinja: true,
+  use_textarea_editor: false,
+  entities: [],
   plugins: {
     daisyui: {
       enabled: true,
       url: DAISYUI_CDN_URL,
-      theme: 'auto',
+      theme: 'auto'
     }
   }
+}
+
+export const fulfillWithDefaults = (config: Partial<ConfigState>) => {
+  return { ...defaultConfigState, ...config } as ConfigState
+}
+
+export const initialConfigState: ConfigState = {
+  ...defaultConfigState,
+  content: `<div class="text-red-600">Default content</div>`,
+  entities: ['sun.sun']
 }
 
 export const useConfigReducer = () => {
@@ -79,7 +91,9 @@ export const useConfigReducer = () => {
   window.addEventListener('tailwindcss-template-card-config-received', ((
     e: CustomEvent
   ) => {
-    updateConfig(e.detail.config, false)
+    const config = e.detail.config as Partial<ConfigState>
+    const filledConfig = fulfillWithDefaults(config)
+    updateConfig(filledConfig, false)
   }) as EventListener)
 
   return {
