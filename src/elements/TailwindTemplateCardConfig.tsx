@@ -4,6 +4,7 @@ import { HaCardConfig } from '../components/HaCardConfig'
 // support shadowroot.adoptedStyleSheets in all browsers
 import 'construct-style-sheets-polyfill'
 import { TailwindTemplateRenderer } from './TailwindTemplateRenderer'
+import { ConfigState, fulfillWithDefaults } from '../store/ConfigReducer'
 
 export class TailwindTemplateCardConfig extends TailwindTemplateRenderer {
   constructor () {
@@ -15,8 +16,8 @@ export class TailwindTemplateCardConfig extends TailwindTemplateRenderer {
     window.addEventListener('tailwindcss-template-card-config-edited', ((
       e: CustomEvent
     ) => {
-      const config = e.detail.config
-      this.configChanged(config)
+      const config = e.detail.config as Partial<ConfigState>
+      this.configChanged(fulfillWithDefaults(config))
     }) as EventListener)
   }
 

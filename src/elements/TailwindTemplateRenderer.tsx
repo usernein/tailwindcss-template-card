@@ -7,7 +7,7 @@ import { HaCardConfig } from '../components/HaCardConfig'
 // support shadowroot.adoptedStyleSheets in all browsers
 import 'construct-style-sheets-polyfill'
 import axios from 'axios'
-import { ConfigState } from '../store/ConfigReducer'
+import { ConfigState, fulfillWithDefaults } from '../store/ConfigReducer'
 
 export class TailwindTemplateRenderer extends HTMLElement {
   _hass: HomeAssistant | undefined
@@ -26,7 +26,7 @@ export class TailwindTemplateRenderer extends HTMLElement {
 
   setConfig (config: Partial<ConfigState>) {
     this._oldConfig = this._config
-    this._config = config
+    this._config = fulfillWithDefaults(config)
 
     const event = new CustomEvent('tailwindcss-template-card-config-received', {
       bubbles: true,

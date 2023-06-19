@@ -4,13 +4,25 @@ import { ConfigCheckbox } from '../ConfigCheckbox'
 import { ConfigInput } from '../ConfigInput'
 import { ConfigToggle } from '../ConfigToggle'
 
+import 'ace-builds'
+// import ace from 'ace-builds/src-noconflict/ace'
+import 'ace-builds/src-noconflict/ace'
+import 'ace-builds/src-noconflict/mode-html'
+import 'ace-builds/src-noconflict/theme-github_dark'
+import 'ace-builds/src-noconflict/snippets/html'
+import 'ace-builds/src-noconflict/ext-language_tools'
+
+// import htmlWorkerUrl from 'ace-builds/src-noconflict/worker-html?url'
+// ace.config.setModuleUrl('ace/mode/html_worker', htmlWorkerUrl)
+import AceEditor from 'react-ace'
+
 export function HaCardConfig () {
   return (
     <ConfigProvider>
       <ConfigContext.Consumer>
         {({ config, updateConfig }) => (
           <div
-            data-theme={config.plugins?.daisyui?.theme || "auto"}
+            data-theme={config.plugins.daisyui.theme || 'auto'}
             className='w-full flex flex-col justify-center items-center rounded-xl bg-base-100'
           >
             <div className='form-control w-[90%] gap-3 justify-evenly'>
@@ -18,17 +30,38 @@ export function HaCardConfig () {
                 <label className='label label-text transform text-sm pt-0'>
                   HTML Content
                 </label>
-                <textarea
-                  value={config.content}
-                  onInput={e =>
-                    updateConfig({
-                      content: (e.target as HTMLTextAreaElement).value
-                    })
-                  }
-                  class='textarea textarea-accent h-48 font-mono rounded-xl w-full'
-                  placeholder={`<div class=''></div>`}
-                  spellcheck={false}
-                ></textarea>
+                {config.use_textarea_editor ? (
+                  <textarea
+                    value={config.content}
+                    onInput={e =>
+                      updateConfig({
+                        content: (e.target as HTMLTextAreaElement).value
+                      })
+                    }
+                    class='textarea textarea-accent h-48 font-mono rounded-xl w-full'
+                    placeholder={`<div class=''></div>`}
+                    spellcheck={false}
+                  ></textarea>
+                ) : (
+                  <div className='h-48 w-full'>
+                    <AceEditor
+                      mode='html'
+                      theme='github_dark'
+                      name='tailwindcss-template-card-config-ace'
+                      height='100%'
+                      width='100%'
+                      editorProps={{ $blockScrolling: true }}
+                      setOptions={{
+                        enableEmmet: true,
+                        enableBasicAutocompletion: true,
+                        enableLiveAutocompletion: true,
+                        enableSnippets: true
+                      }}
+                      value={config.content}
+                      onChange={e => updateConfig({ content: e })}
+                    />
+                  </div>
+                )}
               </div>
 
               <div className='form-control w-full p-0 gap-1'>
@@ -56,6 +89,14 @@ export function HaCardConfig () {
                   >
                     Parse Jinja templates
                   </ConfigToggle>
+                  <ConfigToggle
+                    checked={config.use_textarea_editor}
+                    onChange={checked =>
+                      updateConfig({ use_textarea_editor: checked })
+                    }
+                  >
+                    Use textarea editor
+                  </ConfigToggle>
                 </div>
               </div>
 
@@ -67,7 +108,7 @@ export function HaCardConfig () {
                     updateConfig({
                       plugins: {
                         daisyui: {
-                          ...config.plugins.daisyui,
+                          ...(config.plugins.daisyui),
                           theme: (e.target as HTMLSelectElement).value
                         }
                       }
@@ -76,7 +117,7 @@ export function HaCardConfig () {
                   className='select select-accent p-2 rounded-xl w-full'
                 >
                   <option selected>auto</option>
-                  {Object.values(DAISYUI_THEMES).map(({theme, scheme}) => (
+                  {Object.values(DAISYUI_THEMES).map(({ theme, scheme }) => (
                     <option key={theme} value={theme}>
                       {scheme} - {theme}
                     </option>
@@ -118,7 +159,7 @@ export function HaCardConfig () {
                 <div className='label label-text text-sm'>Plugins settings</div>
                 <div className='ring-1 ring-accent rounded-xl gap-1 flex flex-col p-2'>
                   <ConfigInput
-                    value={config.plugins.daisyui.url}
+                    value={config.plugins.daisyui.url || ''}
                     placeholder={DAISYUI_CDN_URL}
                     onChange={value =>
                       updateConfig({

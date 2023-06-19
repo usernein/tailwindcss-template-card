@@ -13,18 +13,20 @@
     "@twind/preset-autoprefix": "^1.0.7",
     "@twind/preset-tailwind": "^1.1.4",
     "@types/styled-components": "^5.1.26",
+    "ace-builds": "^1.22.1",
     "axios": "^1.4.0",
     "clsx": "^1.2.1",
     "construct-style-sheets-polyfill": "^3.1.0",
     "custom-card-helpers": "^1.9.0",
     "daisyui": "^3.1.1",
     "html-react-parser": "^3.0.16",
-    "preact": "^10.13.1"
+    "preact": "^10.13.1",
+    "react-ace": "^10.1.0"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.5.0",
     "@types/node": "^20.3.1",
-    "@types/react": "^18.2.7",
+    "@types/react": "^18.2.13",
     "autoprefixer": "^10.4.14",
     "nodemon": "^2.0.22",
     "postcss": "^8.4.23",
