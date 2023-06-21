@@ -1,9 +1,26 @@
-#### 2.0.1 (2023-06-21)
+## [2.0.2](https://github.com/usernein/tailwindcss-template-card/compare/v2.0.1...v2.0.2) (2023-06-21)
 
-#### 2.0.0 (2023-06-21)
 
 ### Bug Fixes
 
+* Fix import AceEditor ([e97d28b](https://github.com/usernein/tailwindcss-template-card/commit/e97d28bd0cc40a99c694d549559f5e362aa92d8e))
+
+
+
+## [2.0.1](https://github.com/usernein/tailwindcss-template-card/compare/v2.0.1-1...v2.0.1) (2023-06-21)
+
+
+
+## [2.0.1-1](https://github.com/usernein/tailwindcss-template-card/compare/v2.0.1-0...v2.0.1-1) (2023-06-21)
+
+
+
+## [2.0.1-0](https://github.com/usernein/tailwindcss-template-card/compare/ff79bc280bde00b92d097632c766560a492dc739...v2.0.1-0) (2023-06-21)
+
+
+### Bug Fixes
+
+* Fix AceEditor issue with JSX ([c0f7c92](https://github.com/usernein/tailwindcss-template-card/commit/c0f7c92fb8f3c7cf0d09431da1cdb16949a02fbc))
 * **rendering:** Fix condition when the styles should be reinjected ([c613c9d](https://github.com/usernein/tailwindcss-template-card/commit/c613c9dbb777ca97868cd3a25e5a7d5cf96d7274))
 * **rendering:** Fix conditions to inject stylesheets ([0c9cd38](https://github.com/usernein/tailwindcss-template-card/commit/0c9cd3838c026855a98a8489ba9e9d0459d91664))
 * **rendering:** Force card to update when the config is changed ([85d0c11](https://github.com/usernein/tailwindcss-template-card/commit/85d0c1146a9a68d6c109895e9ad844ed764bd996))
