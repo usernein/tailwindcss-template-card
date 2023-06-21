@@ -5,15 +5,15 @@ import { ConfigInput } from '../ConfigInput'
 import { ConfigToggle } from '../ConfigToggle'
 
 import 'ace-builds'
-import ace from 'ace-builds/src-noconflict/ace'
+import 'ace-builds/src-noconflict/ace'
 import 'ace-builds/src-noconflict/mode-html'
 import 'ace-builds/src-noconflict/theme-github_dark'
 import 'ace-builds/src-noconflict/snippets/html'
 import 'ace-builds/src-noconflict/ext-language_tools'
 import 'ace-builds/src-noconflict/ext-emmet'
 
-import htmlWorkerUrl from 'ace-builds/src-noconflict/worker-html?worker&inline'
-ace.config.setModuleUrl('ace/mode/html_worker', htmlWorkerUrl)
+// import htmlWorkerUrl from 'ace-builds/src-noconflict/worker-html?worker&inline'
+// ace.config.setModuleUrl('ace/mode/html_worker', htmlWorkerUrl)
 import AceEditor from 'react-ace'
 
 export function HaCardConfig () {
@@ -53,6 +53,7 @@ export function HaCardConfig () {
                       width='100%'
                       editorProps={{ $blockScrolling: true }}
                       setOptions={{
+                        useWorker: false,
                         enableEmmet: true,
                         enableBasicAutocompletion: true,
                         enableLiveAutocompletion: true,
