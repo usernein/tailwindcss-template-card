@@ -24,6 +24,9 @@ export abstract class TailwindTemplateRenderer extends HTMLElement {
   }
 
   setConfig (config: Partial<ConfigState>) {
+    const inSetup = Object.keys(this._oldConfig).length === 0
+    const pluginsConfigHasChanged = config.plugins !== this._oldConfig.plugins
+
     this._oldConfig = this._config
     this._config = fulfillWithDefaults(config)
 
@@ -34,17 +37,11 @@ export abstract class TailwindTemplateRenderer extends HTMLElement {
     })
     window.dispatchEvent(event)
 
-    this.injectStylesheetsIfNeeded()
-    this._render(true)
-  }
-
-  injectStylesheetsIfNeeded () {
-    const inSetup = Object.keys(this._oldConfig).length === 0
-    const pluginsConfigHasChanged =  (this._config.plugins !== this._oldConfig.plugins)
-
-    if (inSetup || pluginsConfigHasChanged) {
+    if (pluginsConfigHasChanged || inSetup) {
       this.injectStylesheets(this._config)
     }
+
+    this._render(true)
   }
 
   injectStylesheets ({ plugins }: ConfigState) {
