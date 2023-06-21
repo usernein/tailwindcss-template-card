@@ -22,7 +22,7 @@ export function HaCardConfig () {
       <ConfigContext.Consumer>
         {({ config, updateConfig }) => (
           <div
-            data-theme={config.plugins.daisyui.theme || 'auto'}
+            data-theme={config.plugins.daisyui.theme ?? 'auto'}
             className='w-full flex flex-col justify-center items-center rounded-xl bg-base-100'
           >
             <div className='form-control w-[90%] gap-3 justify-evenly'>
