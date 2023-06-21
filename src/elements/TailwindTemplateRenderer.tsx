@@ -35,7 +35,7 @@ export abstract class TailwindTemplateRenderer extends HTMLElement {
     window.dispatchEvent(event)
 
     this.injectStylesheetsIfNeeded()
-    this._render()
+    this._render(true)
   }
 
   injectStylesheetsIfNeeded () {
@@ -87,7 +87,7 @@ export abstract class TailwindTemplateRenderer extends HTMLElement {
     this._render()
   }
 
-  abstract _render(): void
+  abstract _render(forceRender?: boolean): void
 
   _deRender () {
     this.shadow.innerHTML = ''

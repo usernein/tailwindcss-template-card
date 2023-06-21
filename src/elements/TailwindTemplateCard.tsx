@@ -117,9 +117,9 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
     )
   }
 
-  _render () {
+  _render (forceRender?: boolean) {
     this.updateEntitiesToWatch()
-    this.renderIfNeeded()
+    this.renderIfNeeded(forceRender)
   }
 
   _renderHtmlContent () {
