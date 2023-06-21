@@ -1,5 +1,7 @@
 name: release-on-tag
 run-name: Build and release on tag
+permissions:
+  contents: write
 on:
   push:
     tags:
