@@ -14,7 +14,8 @@ import 'ace-builds/src-noconflict/ext-emmet'
 
 import htmlWorkerUrl from 'ace-builds/src-noconflict/worker-html?worker&inline'
 ace.config.setModuleUrl('ace/mode/html_worker', htmlWorkerUrl)
-import AceEditor from 'react-ace'
+const AceEditor  = require('react-ace').default;
+// import AceEditor from 'react-ace'
 
 export function HaCardConfig () {
   return (
@@ -58,7 +59,7 @@ export function HaCardConfig () {
                         enableSnippets: true
                       }}
                       value={config.content}
-                      onChange={e => updateConfig({ content: e })}
+                      onChange={(e: any) => updateConfig({ content: e })}
                     />
                   </div>
                 )}
