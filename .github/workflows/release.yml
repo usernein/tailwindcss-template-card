@@ -22,7 +22,6 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          body_path: CHANGELOG.md
           append_body: true
           generate_release_notes: true
           prerelease: "${{ steps.check-tag.outputs.prerelease }}"
