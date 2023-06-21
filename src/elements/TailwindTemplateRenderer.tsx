@@ -44,7 +44,7 @@ export abstract class TailwindTemplateRenderer extends HTMLElement {
     this._render(true)
   }
 
-  injectStylesheets ({ plugins }: ConfigState) {
+  async injectStylesheets ({ plugins }: ConfigState) {
     const adoptedStyleSheets = [] as CSSStyleSheet[]
 
     const sheet = cssom(new CSSStyleSheet())
@@ -54,19 +54,39 @@ export abstract class TailwindTemplateRenderer extends HTMLElement {
 
     if (styles) {
       styles.forEach(elem => {
+        if (elem.getAttribute('data-daisyui')) return
         const om = cssom(new CSSStyleSheet())
         om.target.replaceSync(elem.innerHTML)
         adoptedStyleSheets.push(om.target)
       })
     }
 
-    if (!plugins || this._force_daisyui || plugins.daisyui?.enabled) {
-      const daisySheet = cssom(new CSSStyleSheet())
-      const daisyCDN = plugins?.daisyui?.url || DAISYUI_CDN_URL
-      axios.get(daisyCDN).then(res => {
-        daisySheet.target.replaceSync(res.data)
-      })
-      adoptedStyleSheets.push(daisySheet.target)
+    const getDaisyUIStyle = () => {
+      return document.querySelector('head style[data-daisyui]')
+    }
+
+    if (this._force_daisyui || plugins.daisyui.enabled) {
+      const daisyStyle = getDaisyUIStyle()
+      if (!daisyStyle) {
+        const elem = document.createElement('style')
+        elem.setAttribute('data-daisyui', 'true')
+        elem.setAttribute('type', 'text/css')
+
+        const daisyCDN = plugins.daisyui.url ?? DAISYUI_CDN_URL
+        const res = await axios.get(daisyCDN)
+
+        elem.innerHTML = res.data
+        document.head.appendChild(elem)
+      }
+
+      const daisySheet = getDaisyUIStyle()
+      if (daisySheet instanceof HTMLStyleElement) {
+        if (daisySheet.sheet !== null) {
+          const stylesheet = new CSSStyleSheet()
+          stylesheet.replaceSync(daisySheet.innerHTML)
+          adoptedStyleSheets.push(stylesheet)
+        }
+      }
     }
 
     adoptedStyleSheets.push(sheet.target)
