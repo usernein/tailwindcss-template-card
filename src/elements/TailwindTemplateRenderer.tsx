@@ -2,14 +2,13 @@ import { HomeAssistant } from 'custom-card-helpers'
 import { render } from 'preact'
 import config from '../../twind.config'
 import { twind, cssom, observe } from '@twind/core'
-import { HaCardConfig } from '../components/HaCardConfig'
 
 // support shadowroot.adoptedStyleSheets in all browsers
 import 'construct-style-sheets-polyfill'
 import axios from 'axios'
 import { ConfigState, fulfillWithDefaults } from '../store/ConfigReducer'
 
-export class TailwindTemplateRenderer extends HTMLElement {
+export abstract class TailwindTemplateRenderer extends HTMLElement {
   _hass: HomeAssistant | undefined
   _oldHass: HomeAssistant | undefined
   _config: ConfigState = {} as ConfigState
@@ -88,9 +87,7 @@ export class TailwindTemplateRenderer extends HTMLElement {
     this._render()
   }
 
-  _render () {
-    render(<HaCardConfig />, this.shadow)
-  }
+  abstract _render(): void
 
   _deRender () {
     this.shadow.innerHTML = ''
