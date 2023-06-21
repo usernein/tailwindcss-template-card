@@ -1,0 +1,28 @@
+name: release-on-tag
+run-name: Build and release on tag
+on:
+  push:
+    tags:
+      - v**
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build card
+        run: docker-compose up build
+      - name: Check if tag is a prerelease
+        id: check-tag
+        run: |
+          if [[ ${{ github.event.ref }} =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+\-.+$ ]]; then
+              echo "prerelease=true" >> $GITHUB_OUTPUT
+          fi
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: CHANGELOG.md
+          append_body: true
+          generate_release_notes: true
+          prerelease: "${{ steps.check-tag.outputs.prerelease }}"
+          files: |
+            dist/*
