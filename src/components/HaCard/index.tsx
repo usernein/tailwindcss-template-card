@@ -5,12 +5,12 @@ export function HaCard ({
   config
 }: {
   htmlContent: string
-  config: Partial<ConfigState>
+  config: ConfigState
 }) {
   return (
     <>
       {/* @ts-ignore */}
-      <ha-card data-theme={config.plugins?.daisyui?.theme || "auto"}>
+      <ha-card data-theme={config.plugins.daisyui.theme ?? "auto"}>
         <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
         {/* @ts-ignore */}
       </ha-card>

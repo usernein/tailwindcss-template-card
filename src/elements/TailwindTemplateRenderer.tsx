@@ -12,8 +12,8 @@ import { ConfigState, fulfillWithDefaults } from '../store/ConfigReducer'
 export class TailwindTemplateRenderer extends HTMLElement {
   _hass: HomeAssistant | undefined
   _oldHass: HomeAssistant | undefined
-  _config: Partial<ConfigState> = {}
-  _oldConfig: Partial<ConfigState> = {}
+  _config: ConfigState = {} as ConfigState
+  _oldConfig: ConfigState = {} as ConfigState
   shadow: ShadowRoot
   _force_daisyui: boolean = false
   _ignore_broken_config = false
@@ -48,7 +48,7 @@ export class TailwindTemplateRenderer extends HTMLElement {
     }
   }
 
-  injectStylesheets ({ plugins }: Partial<ConfigState>) {
+  injectStylesheets ({ plugins }: ConfigState) {
     const adoptedStyleSheets = [] as CSSStyleSheet[]
 
     const sheet = cssom(new CSSStyleSheet())
