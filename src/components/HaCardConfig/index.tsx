@@ -52,6 +52,7 @@ export function HaCardConfig () {
                       height='100%'
                       width='100%'
                       editorProps={{ $blockScrolling: true }}
+                      debounceChangePeriod={500}
                       setOptions={{
                         useWorker: false,
                         enableEmmet: true,
@@ -110,7 +111,7 @@ export function HaCardConfig () {
                     updateConfig({
                       plugins: {
                         daisyui: {
-                          ...(config.plugins.daisyui),
+                          ...config.plugins.daisyui,
                           theme: (e.target as HTMLSelectElement).value
                         }
                       }
@@ -163,7 +164,7 @@ export function HaCardConfig () {
                   <ConfigInput
                     value={config.plugins.daisyui.url || ''}
                     placeholder={DAISYUI_CDN_URL}
-                    onChange={value =>
+                    onChange={value => {
                       updateConfig({
                         plugins: {
                           daisyui: {
@@ -172,7 +173,7 @@ export function HaCardConfig () {
                           }
                         }
                       })
-                    }
+                    }}
                   >
                     DaisyUI CSS URL
                   </ConfigInput>

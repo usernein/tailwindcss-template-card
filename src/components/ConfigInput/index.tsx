@@ -3,14 +3,17 @@ export function ConfigInput ({
   value,
   placeholder,
   onChange,
-  children
+  children,
+  debounceChangePeriod = 500
 }: {
   disabled?: boolean
   value: string
   placeholder: string
   onChange: (value: string) => void
   children: any
+  debounceChangePeriod?: number
 }) {
+  let timeoutPointer: NodeJS.Timeout
   return (
     <div className='form-control'>
       <label class='label px-0 gap-3'>
@@ -24,7 +27,16 @@ export function ConfigInput ({
           value={value}
           disabled={disabled}
           spellcheck={false}
-          onInput={e => onChange((e.target as HTMLInputElement).value)}
+          onInput={e => {
+            if (timeoutPointer) {
+              clearTimeout(timeoutPointer)
+            }
+            const value = (e.target as HTMLInputElement).value
+
+            timeoutPointer = setTimeout(() => {
+              onChange(value)
+            }, debounceChangePeriod)
+          }}
         />
       </label>
     </div>
