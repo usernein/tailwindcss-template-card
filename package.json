@@ -4,7 +4,7 @@
   "version": "2.0.3",
   "type": "module",
   "scripts": {
-    "dev": "ts-node --esm ./src/dev-server.ts",
+    "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
