@@ -5,6 +5,7 @@ import { HaCardConfig } from '../components/HaCardConfig'
 import 'construct-style-sheets-polyfill'
 import { TailwindTemplateRenderer } from './TailwindTemplateRenderer'
 import { ConfigState, fulfillWithDefaults } from '../store/ConfigReducer'
+import { ConfigProvider } from '../store/ConfigProvider'
 
 export class TailwindTemplateCardConfig extends TailwindTemplateRenderer {
   constructor () {
@@ -32,6 +33,11 @@ export class TailwindTemplateCardConfig extends TailwindTemplateRenderer {
   }
 
   _render () {
-    render(<HaCardConfig />, this.shadow)
+    render(
+      <ConfigProvider>
+        <HaCardConfig />
+      </ConfigProvider>,
+      this.shadow
+    )
   }
 }
