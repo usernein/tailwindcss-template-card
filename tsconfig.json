@@ -23,6 +23,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "plopfile.js"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

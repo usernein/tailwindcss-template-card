@@ -1,13 +1,42 @@
+import {
+  PropsWithChildren,
+  StateUpdater,
+  useContext,
+  useState
+} from 'preact/compat'
 import { ConfigContext } from '../../store/ConfigContext'
-import { CodeEditor } from '../CodeEditor'
-import { TextareaEditor } from '../TextareaEditor'
-import { TweakToggle } from '../../elements/TweakToggle'
-import { TweakPluginToggle } from '../TweakPluginToggle'
-import { TweakPluginInput } from '../TweakPluginInput'
-import { useContext } from 'preact/hooks'
+import clsx from 'clsx'
+import { SettingsTweaks } from '../../pages/SettingsTweaks'
+import { SettingsCardContent } from '../../pages/SettingsCardContent'
+import { SettingsPlugins } from '../../pages/SettingsPlugins'
+import { SettingsAbout } from '../../pages/SettingsAbout'
+
+const ConfigTab = ({
+  activeState,
+  tabKey,
+  children
+}: PropsWithChildren & {
+  activeState: [number, StateUpdater<number>]
+  tabKey: number
+}) => {
+  const [activeTab, setActiveTab] = activeState
+  return (
+    <div
+      className={clsx(
+        'tab',
+        'tab-bordered',
+        activeTab == tabKey && 'tab-active'
+      )}
+      onClick={() => setActiveTab(tabKey)}
+    >
+      {children}
+    </div>
+  )
+}
 
 export function HaCardConfig () {
-  const { config, updateConfig } = useContext(ConfigContext)
+  const { config } = useContext(ConfigContext)
+  const activeState = useState(0)
 
   return (
     <div
@@ -15,90 +44,24 @@ export function HaCardConfig () {
       className='w-full flex flex-col justify-center items-center rounded-xl bg-base-100'
     >
       <div className='form-control w-[90%] gap-3 justify-evenly'>
-        <div className='form-control w-full p-0'>
-          <label className='label label-text transform text-sm pt-0'>
-            HTML Content
-          </label>
-          {config.use_textarea_editor ? (
-            <TextareaEditor
-              value={config.content}
-              onChange={e =>
-                updateConfig({
-                  content: e
-                })
-              }
-              debounceChangePeriod={500}
-            />
-          ) : (
-            <CodeEditor
-              value={config.content}
-              onChange={e => updateConfig({ content: e })}
-            />
-          )}
-        </div>
+        <div className='tabs py-4 flex justify-center w-full'>
+          <ConfigTab activeState={activeState} tabKey={0}>
+            Content
+          </ConfigTab>
+          <ConfigTab activeState={activeState} tabKey={1}>
+            Tweaks
+          </ConfigTab>
+          <ConfigTab activeState={activeState} tabKey={2}>
+            Plugins
+          </ConfigTab>
+          <ConfigTab activeState={activeState} tabKey={3}>
+            About
+          </ConfigTab>
 
-        <div className='form-control w-full p-0 gap-1'>
-          <div className='label label-text text-sm'>Settings</div>
-          <div className='ring-1 ring-accent rounded-xl gap-1 flex flex-col p-2'>
-            <TweakToggle label='Ignore line breaks' tweak='ignore_line_breaks' />
-            <TweakToggle label='Always update' tweak='always_update' />
-            <TweakToggle label='Parse Jinja templates' tweak='parse_jinja' />
-            <TweakToggle
-              label='Use textarea editor'
-              tweak='use_textarea_editor'
-            />
-          </div>
-        </div>
-
-        <div className='form-control w-full p-0'>
-          <div className='label label-text text-sm'>Theme</div>
-          <select
-            value={config.plugins.daisyui.theme}
-            onChange={(e: Event) =>
-              updateConfig({
-                plugins: {
-                  daisyui: {
-                    ...config.plugins.daisyui,
-                    theme: (e.target as HTMLSelectElement).value
-                  }
-                }
-              })
-            }
-            className='select select-accent p-2 rounded-xl w-full'
-          >
-            <option selected>auto</option>
-            {Object.values(DAISYUI_THEMES).map(({ theme, scheme }) => (
-              <option key={theme} value={theme}>
-                {scheme} - {theme}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className='form-control w-full p-0'>
-          <div className='label label-text text-sm'>Plugins</div>
-          <div className='flex flex-col p-2 ring-1 ring-accent rounded-xl'>
-            <div className='w-full flex flex-row flex-wrap justify-between'>
-              <TweakPluginToggle label='DaisyUI' plugin='daisyui' />
-              <TweakPluginToggle
-                label='Tailwind-Elements'
-                plugin='tailwindElements'
-                disabled
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className='form-control w-full p-0'>
-          <div className='label label-text text-sm'>Plugins settings</div>
-          <div className='ring-1 ring-accent rounded-xl gap-1 flex flex-col p-2'>
-            <TweakPluginInput
-              label='DaisyUI CSS URL'
-              plugin='daisyui'
-              option='url'
-              placeholder={DAISYUI_CDN_URL}
-            />
-          </div>
+          {activeState[0] == 0 && <SettingsCardContent />}
+          {activeState[0] == 1 && <SettingsTweaks />}
+          {activeState[0] == 2 && <SettingsPlugins />}
+          {activeState[0] == 3 && <SettingsAbout />}
         </div>
       </div>
     </div>
