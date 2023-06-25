@@ -2,6 +2,7 @@ import {
   PropsWithChildren,
   StateUpdater,
   useContext,
+  useMemo,
   useState
 } from 'preact/compat'
 import { ConfigContext } from '../../store/ConfigContext'
@@ -11,12 +12,16 @@ import { SettingsCardContent } from '../../pages/SettingsCardContent'
 import { SettingsPlugins } from '../../pages/SettingsPlugins'
 import { SettingsAbout } from '../../pages/SettingsAbout'
 
+type ActiveTabState = {
+  index: number
+  inHiddenMode: boolean
+}
 const ConfigTab = ({
   activeState,
   tabKey,
   children
 }: PropsWithChildren & {
-  activeState: [number, StateUpdater<number>]
+  activeState: [ActiveTabState, StateUpdater<ActiveTabState>]
   tabKey: number
 }) => {
   const [activeTab, setActiveTab] = activeState
@@ -25,9 +30,10 @@ const ConfigTab = ({
       className={clsx(
         'tab',
         'tab-bordered',
-        activeTab == tabKey && 'tab-active'
+        activeTab.index == tabKey && 'tab-active'
       )}
-      onClick={() => setActiveTab(tabKey)}
+      onClick={() => setActiveTab({ index: tabKey, inHiddenMode: false })}
+      onDblClick={() => setActiveTab({ index: tabKey, inHiddenMode: true })}
     >
       {children}
     </div>
@@ -36,11 +42,12 @@ const ConfigTab = ({
 
 export function HaCardConfig () {
   const { config } = useContext(ConfigContext)
-  const activeState = useState(0)
+  const daisyUiTheme = useMemo(() => config.plugins.daisyui.theme, [config.plugins.daisyui.theme])
+  const activeState = useState({index: 0, inHiddenMode: false} as ActiveTabState)
 
   return (
     <div
-      data-theme={config.plugins.daisyui.theme ?? 'auto'}
+      data-theme={daisyUiTheme ?? 'auto'}
       className='w-full flex flex-col justify-center items-center rounded-xl bg-base-100'
     >
       <div className='form-control w-[90%] gap-3 justify-evenly'>
@@ -58,10 +65,10 @@ export function HaCardConfig () {
             About
           </ConfigTab>
 
-          {activeState[0] == 0 && <SettingsCardContent />}
-          {activeState[0] == 1 && <SettingsTweaks />}
-          {activeState[0] == 2 && <SettingsPlugins />}
-          {activeState[0] == 3 && <SettingsAbout />}
+          {activeState[0].index == 0 && <SettingsCardContent />}
+          {activeState[0].index == 1 && <SettingsTweaks inHiddenMode={activeState[0].inHiddenMode}/>}
+          {activeState[0].index == 2 && <SettingsPlugins />}
+          {activeState[0].index == 3 && <SettingsAbout />}
         </div>
       </div>
     </div>

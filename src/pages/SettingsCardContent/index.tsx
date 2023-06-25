@@ -1,32 +1,26 @@
-import { useContext } from 'preact/compat'
-import { TextareaEditor } from '../../components/TextareaEditor'
+import { useContext, useMemo } from 'preact/compat'
 import { ConfigContext } from '../../store/ConfigContext'
 import { CodeEditor } from '../../components/CodeEditor'
 import { SettingsBindings } from '../SettingsBindings'
 
 export const SettingsCardContent = () => {
   const { config, updateConfig } = useContext(ConfigContext)
+  const content = useMemo(() => config.content, [config.content])
+
   return (
     <div className='w-full flex flex-col gap-3'>
-      <div className='form-control w-full'>
-        <label className='label label-text text-md font-medium'>HTML Content</label>
-        {config.use_textarea_editor ? (
-          <TextareaEditor
-            value={config.content}
-            onChange={e =>
-              updateConfig({
-                content: e
-              })
-            }
-            debounceChangePeriod={500}
-          />
-        ) : (
-          <CodeEditor
-            value={config.content}
-            onChange={e => updateConfig({ content: e })}
-          />
-        )}
+      <div className='collapse collapse-open bg-base-200/30'>
+        <label className='collapse-title text-md font-medium'>
+          HTML Content
+        </label>
+
+        <CodeEditor
+          value={content}
+          onChange={e => updateConfig({ content: e })}
+        />
       </div>
+
+      <SettingsBindings />
     </div>
   )
 }

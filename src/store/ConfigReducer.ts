@@ -10,6 +10,12 @@ export type ConfigReducerAction = {
   payload: any
 }
 
+export enum CodeEditorOptionsEnum {
+  ACE = 'Ace',
+  TEXTAREA = 'Textarea',
+  CODEMIRROR_DEV = 'CodeMirror_dev'
+}
+
 export type ConfigState = {
   ignore_line_breaks: boolean
   always_update: boolean
@@ -19,7 +25,7 @@ export type ConfigState = {
   plugins: {
     [key: string]: { enabled: boolean; url?: string; theme?: string }
   }
-  use_textarea_editor: boolean
+  code_editor: CodeEditorOptionsEnum
 }
 
 export const ConfigReducer = (
@@ -53,7 +59,7 @@ export const defaultConfigState: ConfigState = {
   ignore_line_breaks: true,
   always_update: false,
   parse_jinja: true,
-  use_textarea_editor: false,
+  code_editor: CodeEditorOptionsEnum.ACE,
   entities: [],
   plugins: {
     daisyui: {

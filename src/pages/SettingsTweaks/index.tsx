@@ -1,47 +1,47 @@
 import { useContext } from 'preact/compat'
-import { TweakToggle } from '../../elements/TweakToggle'
+import { TweakToggle } from '../../components/TweakToggle'
 import { ConfigContext } from '../../store/ConfigContext'
+import { CodeEditorOptions } from '../../components/CodeEditorOptions'
 
-export const SettingsTweaks = () => {
+export const SettingsTweaks = ({ inHiddenMode }: { inHiddenMode?: boolean }) => {
   const { config, updateConfig } = useContext(ConfigContext)
   return (
     <div className='w-full flex flex-col gap-3'>
-      <div className='form-control w-full'>
-        <div className='label label-text text-md font-medium'>Settings</div>
-        <div className='ring-1 ring-accent rounded-xl gap-1 flex flex-col p-2'>
+      <div className='collapse collapse-open bg-base-200/30'>
+        <div className='collapse-title text-md font-medium'>General</div>
+        <div className='collapse-content flex gap-1 flex-col'>
           <TweakToggle label='Ignore line breaks' tweak='ignore_line_breaks' />
           <TweakToggle label='Always update' tweak='always_update' />
           <TweakToggle label='Parse Jinja templates' tweak='parse_jinja' />
-          <TweakToggle
-            label='Use textarea editor'
-            tweak='use_textarea_editor'
-          />
+          <CodeEditorOptions inHiddenMode={inHiddenMode}/>
         </div>
       </div>
 
-      <div className='form-control w-full'>
-        <div className='label label-text text-md font-medium'>Theme</div>
-        <select
-          value={config.plugins.daisyui.theme}
-          onChange={(e: Event) =>
-            updateConfig({
-              plugins: {
-                daisyui: {
-                  ...config.plugins.daisyui,
-                  theme: (e.target as HTMLSelectElement).value
+      <div className='collapse collapse-open bg-base-200/30'>
+        <div className='collapse-title text-md font-medium'>Theme</div>
+        <div className='collapse-content'>
+          <select
+            value={config.plugins.daisyui.theme}
+            onChange={(e: Event) =>
+              updateConfig({
+                plugins: {
+                  daisyui: {
+                    ...config.plugins.daisyui,
+                    theme: (e.target as HTMLSelectElement).value
+                  }
                 }
-              }
-            })
-          }
-          className='select select-accent p-2 rounded-xl w-full'
-        >
-          <option selected>auto</option>
-          {Object.values(DAISYUI_THEMES).map(({ theme, scheme }) => (
-            <option key={theme} value={theme}>
-              {scheme} - {theme}
-            </option>
-          ))}
-        </select>
+              })
+            }
+            className='select w-full'
+          >
+            <option selected>auto</option>
+            {Object.values(DAISYUI_THEMES).map(({ theme, scheme }) => (
+              <option key={theme} value={theme}>
+                {scheme} - {theme}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
     </div>
   )
