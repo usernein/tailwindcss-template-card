@@ -9,11 +9,11 @@ import 'ace-builds/src-noconflict/ext-emmet'
 // import htmlWorkerUrl from 'ace-builds/src-noconflict/worker-html?worker&inline'
 // ace.config.setModuleUrl('ace/mode/html_worker', htmlWorkerUrl)
 import AceEditor from 'react-ace'
-import { CodemirrorEditor } from '../CodemirrorEditor'
-import { TextareaEditor } from '../TextareaEditor'
+import { CodemirrorEditor } from '@components/CodemirrorEditor'
+import { TextareaEditor } from '@components/TextareaEditor'
 import { useContext, useMemo } from 'preact/compat'
-import { ConfigContext } from '../../store/ConfigContext'
-import { CodeEditorOptionsEnum } from '../../store/ConfigReducer'
+import { ConfigContext } from '@store/ConfigContext'
+import { CodeEditorOptionsEnum } from '@store/ConfigReducer'
 
 export function CodeEditor ({
   value,
@@ -28,6 +28,7 @@ export function CodeEditor ({
   return (
     <div className='h-48 w-full'>
       {codeEditor == CodeEditorOptionsEnum.ACE && (
+        // @ts-expect-error
         <AceEditor
           mode='html'
           theme='github_dark'

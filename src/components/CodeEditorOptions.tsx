@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { useContext, useMemo } from 'preact/compat'
-import { ConfigContext } from '../../store/ConfigContext'
-import { CodeEditorOptionsEnum } from '../../store/ConfigReducer'
+import { ConfigContext } from '@store/ConfigContext'
+import { CodeEditorOptionsEnum } from '@store/ConfigReducer'
 
 const CodeOption = ({
   devFeature,
@@ -41,7 +41,7 @@ export function CodeEditorOptions ({
   const code_editor = useMemo(() => config.code_editor, [config.code_editor])
 
   return (
-    <div className='form-control p-2 bg-white/5 font-semibold rounded-lg'>
+    <div className='form-control p-2 bg-base-100 font-semibold rounded-[--rounded-box]'>
       <div className='label-text'>Code editor</div>
       <div className='label flex flex-row w-full justify-evenly'>
         {Object.values(CodeEditorOptionsEnum).map(option => {

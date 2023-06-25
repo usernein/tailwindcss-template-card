@@ -1,7 +1,7 @@
 import { useContext } from 'preact/hooks'
-import { ConfigContext } from '../../store/ConfigContext'
-import { ConfigInput } from '../ConfigInput'
-import { ConfigState } from '../../store/ConfigReducer'
+import { ConfigContext } from '@store/ConfigContext'
+import { ConfigInput } from '@components/ConfigInput'
+import { ConfigState } from '@store/ConfigReducer'
 
 export function TweakPluginInput ({
   label,

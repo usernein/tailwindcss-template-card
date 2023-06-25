@@ -1,12 +1,12 @@
 import { HomeAssistant } from 'custom-card-helpers'
 import { render } from 'preact'
-import config from '../../twind.config'
+import config from '@/twind.config'
 import { twind, cssom, observe } from '@twind/core'
 
 // support shadowroot.adoptedStyleSheets in all browsers
 import 'construct-style-sheets-polyfill'
 import axios from 'axios'
-import { ConfigState, fulfillWithDefaults } from '../store/ConfigReducer'
+import { ConfigState, fulfillWithDefaults } from '@store/ConfigReducer'
 
 export abstract class TailwindTemplateRenderer extends HTMLElement {
   _hass: HomeAssistant | undefined

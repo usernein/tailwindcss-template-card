@@ -1,7 +1,7 @@
 import { useContext } from 'preact/hooks'
-import { ConfigContext } from '../../store/ConfigContext'
-import { ConfigState } from '../../store/ConfigReducer'
-import { ConfigCheckbox } from '../ConfigCheckbox'
+import { ConfigContext } from '@store/ConfigContext'
+import { ConfigState } from '@store/ConfigReducer'
+import { ConfigCheckbox } from '@components/ConfigCheckbox'
 
 export function TweakPluginToggle ({
   label,

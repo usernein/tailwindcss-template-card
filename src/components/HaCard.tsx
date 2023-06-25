@@ -1,4 +1,4 @@
-import { ConfigState } from '../../store/ConfigReducer'
+import { ConfigState } from '@store/ConfigReducer'
 
 export function HaCard ({
   htmlContent,

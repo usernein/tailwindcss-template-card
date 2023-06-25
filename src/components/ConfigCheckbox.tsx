@@ -18,7 +18,7 @@ export function ConfigCheckbox ({
       )}
       data-tip='Not supported yet'
     >
-      <label className='label bg-white/5 rounded-xl px-2 cursor-pointer gap-2'>
+      <label className='label bg-base-100 rounded-xl px-2 cursor-pointer gap-2'>
         <input
           type='checkbox'
           checked={checked}

@@ -1,5 +1,5 @@
-import { Binding } from '../..'
-import { FloatingInput } from '../FloatingInput'
+import { Binding } from '@/src/types'
+import { FloatingInput } from '@components/FloatingInput'
 
 export function BindingConfig ({ binding }: { binding: Binding }) {
 

@@ -1,7 +1,7 @@
 import { useContext, useMemo } from 'preact/compat'
-import { ConfigContext } from '../../store/ConfigContext'
-import { CodeEditor } from '../../components/CodeEditor'
-import { SettingsBindings } from '../SettingsBindings'
+import { ConfigContext } from '@store/ConfigContext'
+import { CodeEditor } from '@components/CodeEditor'
+import { SettingsBindings } from '@pages/SettingsBindings'
 
 export const SettingsCardContent = () => {
   const { config, updateConfig } = useContext(ConfigContext)
@@ -9,7 +9,7 @@ export const SettingsCardContent = () => {
 
   return (
     <div className='w-full flex flex-col gap-3'>
-      <div className='collapse collapse-open bg-base-200/30'>
+      <div className='collapse collapse-open bg-base-300/30'>
         <label className='collapse-title text-md font-medium'>
           HTML Content
         </label>

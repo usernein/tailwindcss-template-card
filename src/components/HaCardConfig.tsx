@@ -5,12 +5,12 @@ import {
   useMemo,
   useState
 } from 'preact/compat'
-import { ConfigContext } from '../../store/ConfigContext'
+import { ConfigContext } from '@store/ConfigContext'
 import clsx from 'clsx'
-import { SettingsTweaks } from '../../pages/SettingsTweaks'
-import { SettingsCardContent } from '../../pages/SettingsCardContent'
-import { SettingsPlugins } from '../../pages/SettingsPlugins'
-// import { SettingsAbout } from '../../pages/SettingsAbout'
+import { SettingsTweaks } from '@pages/SettingsTweaks'
+import { SettingsCardContent } from '@pages/SettingsCardContent'
+import { SettingsPlugins } from '@pages/SettingsPlugins'
+// import { SettingsAbout } from '@pages/SettingsAbout'
 
 type ActiveTabState = {
   index: number
@@ -56,7 +56,7 @@ export function HaCardConfig () {
   return (
     <div
       {...attributes}
-      className='w-full flex flex-col justify-center items-center rounded-xl bg-base-100 p-4'
+      className='w-full flex flex-col justify-center items-center rounded-xl bg-base-300 p-4'
     >
       <div className='form-control w-full gap-3 justify-evenly'>
         <div className='tabs flex justify-center w-full'>

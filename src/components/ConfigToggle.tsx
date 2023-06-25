@@ -8,7 +8,7 @@ export function ConfigToggle ({
   onChange: (checked: boolean) => void
 }) {
   return (
-    <label className='select label cursor-pointer bg-white/5 px-2'>
+    <label className='select label cursor-pointer bg-base-100 px-2'>
       <span className='label-text'>{children}</span>
       <input
         type='checkbox'

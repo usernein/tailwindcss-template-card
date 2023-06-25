@@ -1,11 +1,11 @@
 import { render } from 'preact'
-import { HaCardConfig } from '../components/HaCardConfig'
+import { HaCardConfig } from '@components/HaCardConfig'
 
 // support shadowroot.adoptedStyleSheets in all browsers
 import 'construct-style-sheets-polyfill'
 import { TailwindTemplateRenderer } from './TailwindTemplateRenderer'
-import { ConfigState, fulfillWithDefaults } from '../store/ConfigReducer'
-import { ConfigProvider } from '../store/ConfigProvider'
+import { ConfigState, fulfillWithDefaults } from '@store/ConfigReducer'
+import { ConfigProvider } from '@store/ConfigProvider'
 
 export class TailwindTemplateCardConfig extends TailwindTemplateRenderer {
   constructor () {

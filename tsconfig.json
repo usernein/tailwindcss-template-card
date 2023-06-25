@@ -21,7 +21,15 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["../*"],
+      "@components/*": ["./components/*"],
+      "@pages/*": ["./pages/*"],
+      "@store/*": ["./store/*"],
+      "@elements/*": ["./elements/*"],
+    }
   },
   "include": ["src", "plopfile.js"],
   "references": [{ "path": "./tsconfig.node.json" }]

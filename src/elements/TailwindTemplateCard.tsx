@@ -1,10 +1,10 @@
 import { render } from 'preact'
-import { HaCard } from '../components/HaCard'
+import { HaCard } from '@components/HaCard'
 
 // support shadowroot.adoptedStyleSheets in all browsers
 import 'construct-style-sheets-polyfill'
 import { TailwindTemplateRenderer } from './TailwindTemplateRenderer'
-import { initialConfigState } from '../store/ConfigReducer'
+import { initialConfigState } from '@store/ConfigReducer'
 
 console.info(
   `%c  TailwindCSS Template Card  \n%c  Version ${CARD_VERSION}  \n%c  Star it at http://github.com/usernein/tailwindcss-template-card!`,

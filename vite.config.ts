@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import preact from '@preact/preset-vite'
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 import daisyUiThemes from 'daisyui/src/theming/themes'
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 const daisyUiFormattedThemes = Object.entries(daisyUiThemes).map(([k, v]) => ({
   theme: k.match(/theme=([\-\w]+)/)[1],
@@ -12,7 +13,7 @@ daisyUiFormattedThemes.sort((a, b) => `${a.scheme}${a.theme}`.localeCompare(`${b
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [preact(), cssInjectedByJsPlugin()],
+  plugins: [preact(), cssInjectedByJsPlugin(), tsconfigPaths()],
   define: {
     CARD_VERSION: JSON.stringify(process.env.npm_package_version),
     DAISYUI_CDN_URL:
