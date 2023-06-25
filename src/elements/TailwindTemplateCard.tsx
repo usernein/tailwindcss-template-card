@@ -152,6 +152,11 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
     if (!this._config.bindings) return
 
     this._config.bindings.forEach(binding => {
+      console.log({
+        binding,
+        valid: !(!binding.selector || !binding.bind || !binding.type)
+      })
+      if (!binding.selector || !binding.bind || !binding.type) return
       const matches = this.shadow.querySelectorAll(binding.selector)
 
       matches.forEach(match => {
@@ -184,7 +189,7 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
   }
 
   resolveBindValue (element: Element, bind: string) {
-    if (!this._hass) return;
+    if (!this._hass) return
     const entity = this._hass.states[this._config.entity]
 
     try {

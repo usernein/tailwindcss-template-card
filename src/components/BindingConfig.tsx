@@ -21,12 +21,16 @@ export function BindingConfig ({
   return (
     <div
       class={clsx(
-        'flex flex-col gap-2 justify-center bg-base-100 p-2 rounded-[var(--rounded-box)] transition-[height] duration-300 w-56',
-        isMinimized ? 'h-12 cursor-pointer delay-150' : 'h-32'
+        'flex flex-col gap-2 justify-center bg-base-100 p-2 rounded-[var(--rounded-box)] transition-[height] duration-300 w-[40%] h-fit cursor-pointer',
+        isMinimized ? 'opacity-70' : ''
       )}
-      {...(isMinimized ? { onClickCapture: openHandler, onMouseOverCapture: (e) => e.stopImmediatePropagation() } : {})}
+      {...(isMinimized
+        ? {
+            onClickCapture: openHandler
+          }
+        : {})}
     >
-      <div class='w-full h-fit self-start flex flex-row flex-wrap'>
+      <div class={clsx('w-fit h-fit self-start flex flex-row flex-wrap', isMinimized && 'pointer-events-none')}>
         <FloatingInput
           label='Selector'
           value={binding.selector}
@@ -39,13 +43,13 @@ export function BindingConfig ({
           onChange={value => {}}
           isMinimized={isMinimized}
         />
-        {!isMinimized && (
+        <div className={clsx('w-full transition-all duration-300', isMinimized && 'hidden')}>
           <FloatingTextarea
             label='Bind'
             value={binding.bind}
             onChange={value => {}}
           />
-        )}
+        </div>
       </div>
     </div>
   )
