@@ -10,7 +10,7 @@ import clsx from 'clsx'
 import { SettingsTweaks } from '../../pages/SettingsTweaks'
 import { SettingsCardContent } from '../../pages/SettingsCardContent'
 import { SettingsPlugins } from '../../pages/SettingsPlugins'
-import { SettingsAbout } from '../../pages/SettingsAbout'
+// import { SettingsAbout } from '../../pages/SettingsAbout'
 
 type ActiveTabState = {
   index: number
