@@ -22,7 +22,7 @@ export function ConfigInput ({
         </span>
         <input
           type='text'
-          className='input input-accent w-full input-sm'
+          className='input w-full input-sm bg-base-100'
           placeholder={placeholder}
           value={value}
           disabled={disabled}

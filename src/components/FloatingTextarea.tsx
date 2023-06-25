@@ -1,27 +1,19 @@
-import clsx from 'clsx'
-
-export function FloatingInput ({
+export function FloatingTextarea ({
   label,
   value,
-  onChange,
-  isMinimized
+  onChange
 }: {
   label: string
   value: string
   onChange: (value: string) => void
-  isMinimized?: boolean
 }) {
   return (
-    <div class='relative p-1 w-[50%] flex flex-col-reverse'>
-      <input
-        type='text'
+    <div class='w-full flex flex-col-reverse p-1'>
+      <textarea
         name='floating_outlined'
         value={value}
         onChange={e => onChange((e.target as HTMLInputElement).value)}
-        class={clsx(
-          'bg-white/5 z-10 input h-10 peer focus:outline-none',
-          isMinimized ? 'w-24 text-sm' : 'w-full'
-        )}
+        class='bg-white/5 w-full z-10 textarea leading-4 text-base peer focus:outline-none resize-y'
         placeholder={label}
         autoComplete={'off'}
         spellcheck={false}

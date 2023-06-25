@@ -1,25 +1,23 @@
 import { useContext } from 'preact/hooks'
 import { ConfigContext } from '@store/ConfigContext'
-import { ConfigInput } from '@components/ConfigInput'
 import { ConfigState } from '@store/ConfigReducer'
+import { FloatingInput } from '@components/FloatingInput'
 
 export function TweakPluginInput ({
   label,
   plugin,
-  option,
-  placeholder
+  option
 }: {
   label: string
   plugin: keyof ConfigState['plugins']
   option: keyof ConfigState['plugins'][typeof plugin]
-  placeholder: string
 }) {
   const { config, updateConfig } = useContext(ConfigContext)
 
   return (
-    <ConfigInput
+    <FloatingInput
       value={config.plugins.daisyui.url ?? ''}
-      placeholder={placeholder}
+      label={label}
       onChange={value => {
         updateConfig({
           plugins: {
@@ -30,8 +28,6 @@ export function TweakPluginInput ({
           }
         })
       }}
-    >
-      {label}
-    </ConfigInput>
+    />
   )
 }
