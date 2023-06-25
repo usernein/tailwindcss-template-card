@@ -1,4 +1,5 @@
 import { useReducer } from 'preact/hooks'
+import { Binding, BindAction } from '..'
 
 export enum ConfigActionTypes {
   SET_CONFIG
@@ -17,6 +18,7 @@ export enum CodeEditorOptionsEnum {
 }
 
 export type ConfigState = {
+  entity: string
   ignore_line_breaks: boolean
   always_update: boolean
   content: string
@@ -26,6 +28,8 @@ export type ConfigState = {
     [key: string]: { enabled: boolean; url?: string; theme?: string }
   }
   code_editor: CodeEditorOptionsEnum
+  bindings: Binding[]
+  actions: BindAction[]
 }
 
 export const ConfigReducer = (
@@ -55,12 +59,15 @@ export const ConfigReducer = (
 }
 
 export const defaultConfigState: ConfigState = {
+  entity: '',
   content: '',
   ignore_line_breaks: true,
   always_update: false,
   parse_jinja: true,
   code_editor: CodeEditorOptionsEnum.ACE,
   entities: [],
+  bindings: [],
+  actions: [],
   plugins: {
     daisyui: {
       enabled: true,

@@ -129,6 +129,8 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
       <HaCard htmlContent={this._htmlContent} config={this._config} />,
       this.shadow
     )
+
+    this.applyBindings()
   }
 
   ensureIsReadyForRender () {
@@ -143,6 +145,68 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
     }
     if (!this.shadow) {
       throw new Error('this.shadow is invalid')
+    }
+  }
+
+  applyBindings () {
+    if (!this._config.bindings) return
+
+    this._config.bindings.forEach(binding => {
+      const matches = this.shadow.querySelectorAll(binding.selector)
+
+      matches.forEach(match => {
+        const result = this.resolveBindValue(match, binding.bind)
+        const target = match as HTMLElement
+
+        switch (binding.type) {
+          case 'text':
+            target.innerText = result
+            break
+          case 'html':
+            target.innerHTML = result
+            break
+          case 'class':
+            result && target.classList.add(result)
+            break
+          case 'checked':
+            ;(target as HTMLInputElement).checked = Boolean(result)
+            break
+          default:
+            if (typeof result === 'undefined' || '' === `${result}`) {
+              target.removeAttribute(binding.type)
+            } else {
+              target.setAttribute(binding.type, result)
+            }
+            break
+        }
+      })
+    })
+  }
+
+  resolveBindValue (element: Element, bind: string) {
+    if (!this._hass) return;
+    const entity = this._hass.states[this._config.entity]
+
+    try {
+      const getState = new Function(
+        'hass',
+        'config',
+        'entity',
+        'state',
+        'attr',
+        bind
+      )
+      const nextState = getState.call(
+        element,
+        this.hass,
+        this._config,
+        entity,
+        entity?.state,
+        entity?.attributes
+      )
+      return nextState
+    } catch (e) {
+      console.log('BINDING --> FAILED', bind)
     }
   }
 }
