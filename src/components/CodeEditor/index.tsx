@@ -22,7 +22,7 @@ export function CodeEditor ({
   value: string
   onChange: (value: string) => void
 }) {
-  const { config, updateConfig } = useContext(ConfigContext)
+  const { config } = useContext(ConfigContext)
 
   const codeEditor = useMemo(() => config.code_editor, [config.code_editor])
   return (
