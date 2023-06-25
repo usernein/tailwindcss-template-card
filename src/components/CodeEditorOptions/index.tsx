@@ -45,7 +45,7 @@ export function CodeEditorOptions ({
       <div className='label-text'>Code editor</div>
       <div className='label flex flex-row w-full justify-evenly'>
         {Object.values(CodeEditorOptionsEnum).map(option => {
-          const isDevFeature = option.endsWith('_dev')
+          const isDevFeature = /_dev/i.test(option)
 
           return (
             <CodeOption
