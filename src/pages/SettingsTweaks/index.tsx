@@ -18,7 +18,7 @@ export const SettingsTweaks = ({ inHiddenMode }: { inHiddenMode?: boolean }) => 
       </div>
 
       <div className='collapse collapse-open bg-base-200/30'>
-        <div className='collapse-title text-md font-medium'>Theme</div>
+        <div className='collapse-title text-md font-medium'>DaisyUI theme</div>
         <div className='collapse-content'>
           <select
             value={config.plugins.daisyui.theme}
@@ -34,7 +34,7 @@ export const SettingsTweaks = ({ inHiddenMode }: { inHiddenMode?: boolean }) => 
             }
             className='select w-full'
           >
-            <option selected>auto</option>
+            <option selected>inherit</option>
             {Object.values(DAISYUI_THEMES).map(({ theme, scheme }) => (
               <option key={theme} value={theme}>
                 {scheme} - {theme}

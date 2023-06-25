@@ -42,12 +42,20 @@ const ConfigTab = ({
 
 export function HaCardConfig () {
   const { config } = useContext(ConfigContext)
-  const daisyUiTheme = useMemo(() => config.plugins.daisyui.theme, [config.plugins.daisyui.theme])
-  const activeState = useState({index: 0, inHiddenMode: false} as ActiveTabState)
+  const daisyUiTheme = useMemo(
+    () => config.plugins.daisyui.theme ?? 'inherit',
+    [config.plugins.daisyui.theme]
+  )
+  const attributes =
+    ['inherit', 'auto'].includes(daisyUiTheme) ? {} : { 'data-theme': daisyUiTheme }
+  const activeState = useState({
+    index: 0,
+    inHiddenMode: false
+  } as ActiveTabState)
 
   return (
     <div
-      data-theme={daisyUiTheme ?? 'auto'}
+      {...attributes}
       className='w-full flex flex-col justify-center items-center rounded-xl bg-base-100 p-4'
     >
       <div className='form-control w-full gap-3 justify-evenly'>
@@ -66,10 +74,12 @@ export function HaCardConfig () {
           </ConfigTab> */}
         </div>
 
-          {activeState[0].index == 0 && <SettingsCardContent />}
-          {activeState[0].index == 1 && <SettingsTweaks inHiddenMode={activeState[0].inHiddenMode}/>}
-          {activeState[0].index == 2 && <SettingsPlugins />}
-          {/* {activeState[0].index == 3 && <SettingsAbout />} */}
+        {activeState[0].index == 0 && <SettingsCardContent />}
+        {activeState[0].index == 1 && (
+          <SettingsTweaks inHiddenMode={activeState[0].inHiddenMode} />
+        )}
+        {activeState[0].index == 2 && <SettingsPlugins />}
+        {/* {activeState[0].index == 3 && <SettingsAbout />} */}
       </div>
     </div>
   )
