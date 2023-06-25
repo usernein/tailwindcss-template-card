@@ -48,10 +48,10 @@ export function HaCardConfig () {
   return (
     <div
       data-theme={daisyUiTheme ?? 'auto'}
-      className='w-full flex flex-col justify-center items-center rounded-xl bg-base-100'
+      className='w-full flex flex-col justify-center items-center rounded-xl bg-base-100 p-4'
     >
-      <div className='form-control w-[90%] gap-3 justify-evenly'>
-        <div className='tabs py-4 flex justify-center w-full'>
+      <div className='form-control w-full gap-3 justify-evenly'>
+        <div className='tabs flex justify-center w-full'>
           <ConfigTab activeState={activeState} tabKey={0}>
             Content
           </ConfigTab>
@@ -61,15 +61,15 @@ export function HaCardConfig () {
           <ConfigTab activeState={activeState} tabKey={2}>
             Plugins
           </ConfigTab>
-          <ConfigTab activeState={activeState} tabKey={3}>
+          {/* <ConfigTab activeState={activeState} tabKey={3}>
             About
-          </ConfigTab>
+          </ConfigTab> */}
+        </div>
 
           {activeState[0].index == 0 && <SettingsCardContent />}
           {activeState[0].index == 1 && <SettingsTweaks inHiddenMode={activeState[0].inHiddenMode}/>}
           {activeState[0].index == 2 && <SettingsPlugins />}
-          {activeState[0].index == 3 && <SettingsAbout />}
-        </div>
+          {/* {activeState[0].index == 3 && <SettingsAbout />} */}
       </div>
     </div>
   )
