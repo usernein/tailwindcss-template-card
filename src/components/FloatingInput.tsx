@@ -17,7 +17,7 @@ export function FloatingInput ({
         type='text'
         name='floating_outlined'
         value={value}
-        onChange={e => onChange((e.target as HTMLInputElement).value)}
+        onInput={e => onChange((e.target as HTMLInputElement).value)}
         class={clsx(
           'bg-white/5 text-sm z-10 w-full input h-10 peer focus:outline-none ring-0 placeholder:text-[hsl(var(--er))] placeholder-shown:ring-1 placeholder-shown:ring-[hsl(var(--er))]',
           isMinimized ? 'text-base-content/50' : ''
@@ -34,7 +34,7 @@ export function FloatingInput ({
       </label>
       <label
         for='floating_outlined'
-        class='flex text-base-content peer-hover:scale-110 peer-focus:scale-110 duration-300 w-fit opacity-100 text-error hidden peer-placeholder-shown:block'
+        class='peer-hover:scale-110 peer-focus:scale-110 duration-300 w-fit opacity-100 text-error hidden peer-placeholder-shown:block'
       >
         <span className='label-text-alt text-inherit'>Required</span>
       </label>

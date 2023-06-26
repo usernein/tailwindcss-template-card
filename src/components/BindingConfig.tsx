@@ -6,11 +6,13 @@ import { Binding } from '@types'
 export function BindingConfig ({
   binding,
   isMinimized = false,
-  maximize
+  maximize,
+  onChange
 }: {
   binding: Binding
   isMinimized?: boolean
   maximize?: () => void
+  onChange: (value: Binding) => void
 }) {
   const openHandler: EventListener = e => {
     e.preventDefault()
@@ -21,7 +23,7 @@ export function BindingConfig ({
   return (
     <div
       class={clsx(
-        'flex flex-col gap-2 justify-center bg-base-100 p-2 rounded-[var(--rounded-box)] transition-[height] duration-300 w-[40%] h-fit cursor-pointer',
+        'flex flex-col gap-2 justify-center bg-base-100 p-2 rounded-[var(--rounded-box)] transition-[height] duration-300 w-[80%] h-fit cursor-pointer hover:brightness-110',
         isMinimized ? 'opacity-70' : ''
       )}
       {...(isMinimized
@@ -34,20 +36,20 @@ export function BindingConfig ({
         <FloatingInput
           label='Selector'
           value={binding.selector}
-          onChange={value => {}}
+          onChange={value => onChange({ ...binding, selector: value })}
           isMinimized={isMinimized}
         />
         <FloatingInput
           label='Type'
           value={binding.type}
-          onChange={value => {}}
+          onChange={value => onChange({ ...binding, type: value })}
           isMinimized={isMinimized}
         />
         <div className={clsx('w-full transition-all duration-300', isMinimized && 'hidden')}>
           <FloatingTextarea
             label='Bind'
             value={binding.bind}
-            onChange={value => {}}
+            onChange={value => onChange({ ...binding, bind: value })}
           />
         </div>
       </div>
