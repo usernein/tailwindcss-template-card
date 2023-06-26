@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 18
       - name: Build card
-        run: docker-compose up build
+        run: npm install && npm run build
       - name: Check if tag is a prerelease
         id: check-tag
         run: |
