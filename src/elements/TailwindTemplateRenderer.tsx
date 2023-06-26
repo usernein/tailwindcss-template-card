@@ -8,7 +8,9 @@ import 'construct-style-sheets-polyfill'
 import axios from 'axios'
 import { fulfillWithDefaults } from '@store/ConfigReducer'
 
+import generatedCss from "@/src/index.css?inline"
 import { ConfigState } from '@types'
+
 export abstract class TailwindTemplateRenderer extends HTMLElement {
   _hass: HomeAssistant | undefined
   _oldHass: HomeAssistant | undefined
@@ -47,6 +49,10 @@ export abstract class TailwindTemplateRenderer extends HTMLElement {
 
   async injectStylesheets ({ plugins }: ConfigState) {
     const adoptedStyleSheets = [] as CSSStyleSheet[]
+
+    const generatedSheet = cssom(new CSSStyleSheet())
+    generatedSheet.target.replaceSync(generatedCss)
+    adoptedStyleSheets.push(generatedSheet.target)
 
     const sheet = cssom(new CSSStyleSheet())
     const tw = twind(config, sheet)

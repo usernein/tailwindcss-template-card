@@ -17,7 +17,7 @@ export default defineConfig({
     CARD_VERSION: JSON.stringify(process.env.npm_package_version),
     DAISYUI_CDN_URL:
       '"https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css"',
-    DAISYUI_THEMES: daisyUiFormattedThemes,
+    DAISYUI_THEMES: daisyUiFormattedThemes
   },
   build: {
     rollupOptions: {
