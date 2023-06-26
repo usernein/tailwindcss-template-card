@@ -152,10 +152,6 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
     if (!this._config.bindings) return
 
     this._config.bindings.forEach(binding => {
-      console.log({
-        binding,
-        valid: !(!binding.selector || !binding.bind || !binding.type)
-      })
       if (!binding.selector || !binding.bind || !binding.type) return
       const matches = this.shadow.querySelectorAll(binding.selector)
 
