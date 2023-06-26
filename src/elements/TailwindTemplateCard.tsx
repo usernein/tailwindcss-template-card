@@ -5,6 +5,7 @@ import { HaCard } from '@components/HaCard'
 import 'construct-style-sheets-polyfill'
 import { TailwindTemplateRenderer } from './TailwindTemplateRenderer'
 import { initialConfigState } from '@store/ConfigReducer'
+import { Binding } from '@types'
 
 console.info(
   `%c  TailwindCSS Template Card  \n%c  Version ${CARD_VERSION}  \n%c  Star it at http://github.com/usernein/tailwindcss-template-card!`,

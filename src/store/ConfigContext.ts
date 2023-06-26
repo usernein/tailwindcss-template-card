@@ -1,3 +1,4 @@
+import { ConfigState } from "@types"
 import { createContext } from "preact"
 
 export type ConfigContextValues = {

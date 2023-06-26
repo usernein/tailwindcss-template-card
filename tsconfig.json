@@ -29,8 +29,9 @@
       "@pages/*": ["./pages/*"],
       "@store/*": ["./store/*"],
       "@elements/*": ["./elements/*"],
+      "@types": ["./types"],
     }
   },
-  "include": ["src", "plopfile.js"],
+  "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

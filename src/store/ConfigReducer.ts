@@ -1,3 +1,4 @@
+import { CodeEditorOptionsEnum, ConfigActionTypes, ConfigReducerAction, ConfigState } from '@types'
 import { useReducer } from 'preact/hooks'
 
 export const ConfigReducer = (

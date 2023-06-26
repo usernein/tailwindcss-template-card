@@ -1,6 +1,7 @@
 import { useContext, useMemo, useState } from 'preact/compat'
 import { ConfigContext } from '@store/ConfigContext'
 import { BindingConfig } from '@components/BindingConfig'
+import { Binding } from '@types'
 
 export const SettingsBindings = () => {
   const { config, updateConfig } = useContext(ConfigContext)

@@ -1,7 +1,7 @@
 import { useContext } from 'preact/hooks'
 import { ConfigContext } from '@store/ConfigContext'
 import { ConfigToggle } from '@components/ConfigToggle'
-import { ConfigState } from '@store/ConfigReducer'
+import { ConfigState } from '@types'
 
 export function TweakToggle ({
   label,

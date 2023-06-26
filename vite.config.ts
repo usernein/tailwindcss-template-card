@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite'
 import preact from '@preact/preset-vite'
-import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 import daisyUiThemes from 'daisyui/src/theming/themes'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
@@ -13,12 +12,12 @@ daisyUiFormattedThemes.sort((a, b) => `${a.scheme}${a.theme}`.localeCompare(`${b
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [preact(), cssInjectedByJsPlugin(), tsconfigPaths()],
+  plugins: [preact(), tsconfigPaths()],
   define: {
     CARD_VERSION: JSON.stringify(process.env.npm_package_version),
     DAISYUI_CDN_URL:
       '"https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css"',
-    DAISYUI_THEMES: daisyUiFormattedThemes
+    DAISYUI_THEMES: daisyUiFormattedThemes,
   },
   build: {
     rollupOptions: {

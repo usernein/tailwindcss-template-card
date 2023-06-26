@@ -4,8 +4,9 @@ import { HaCardConfig } from '@components/HaCardConfig'
 // support shadowroot.adoptedStyleSheets in all browsers
 import 'construct-style-sheets-polyfill'
 import { TailwindTemplateRenderer } from './TailwindTemplateRenderer'
-import { ConfigState, fulfillWithDefaults } from '@store/ConfigReducer'
+import { fulfillWithDefaults } from '@store/ConfigReducer'
 import { ConfigProvider } from '@store/ConfigProvider'
+import { ConfigState } from '@types'
 
 export class TailwindTemplateCardConfig extends TailwindTemplateRenderer {
   constructor () {

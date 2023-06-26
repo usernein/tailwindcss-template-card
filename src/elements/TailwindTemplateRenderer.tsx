@@ -6,8 +6,9 @@ import { twind, cssom, observe } from '@twind/core'
 // support shadowroot.adoptedStyleSheets in all browsers
 import 'construct-style-sheets-polyfill'
 import axios from 'axios'
-import { ConfigState, fulfillWithDefaults } from '@store/ConfigReducer'
+import { fulfillWithDefaults } from '@store/ConfigReducer'
 
+import { ConfigState } from '@types'
 export abstract class TailwindTemplateRenderer extends HTMLElement {
   _hass: HomeAssistant | undefined
   _oldHass: HomeAssistant | undefined

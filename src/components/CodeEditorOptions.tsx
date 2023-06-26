@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { useContext, useMemo } from 'preact/compat'
 import { ConfigContext } from '@store/ConfigContext'
-import { CodeEditorOptionsEnum } from '@store/ConfigReducer'
+import { CodeEditorOptionsEnum } from '@types'
 
 const CodeOption = ({
   devFeature,

@@ -1,5 +1,3 @@
-import './index.css'
-import './types/index.d.ts'
 import { TailwindTemplateCard } from './elements/TailwindTemplateCard.tsx'
 import { TailwindTemplateCardConfig } from './elements/TailwindTemplateCardConfig.tsx'
 

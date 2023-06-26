@@ -1,6 +1,7 @@
 import { useContext } from 'preact/hooks'
 import { ConfigContext } from '@store/ConfigContext'
 import { FloatingInput } from '@components/FloatingInput'
+import { ConfigState } from '@types'
 
 export function TweakPluginInput ({
   label,

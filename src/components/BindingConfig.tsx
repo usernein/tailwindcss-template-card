@@ -1,6 +1,7 @@
 import { FloatingInput } from '@components/FloatingInput'
 import { FloatingTextarea } from './FloatingTextarea'
 import clsx from 'clsx'
+import { Binding } from '@types'
 
 export function BindingConfig ({
   binding,
