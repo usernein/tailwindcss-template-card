@@ -42,7 +42,7 @@ export const defaultConfigState: ConfigState = {
     daisyui: {
       enabled: true,
       url: DAISYUI_CDN_URL,
-      theme: 'auto'
+      theme: 'dark'
     }
   }
 }
