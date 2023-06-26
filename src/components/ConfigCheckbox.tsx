@@ -22,11 +22,11 @@ export function ConfigCheckbox ({
         <input
           type='checkbox'
           checked={checked}
-          className='checkbox'
+          className='checkbox checkbox-accent'
           disabled={disabled}
           onChange={e => onChange((e.target as HTMLInputElement).checked)}
         />
-        <span className='label-text w-full'>{children}</span>
+        <span className='label-text text-left w-full'>{children}</span>
       </label>
     </div>
   )
