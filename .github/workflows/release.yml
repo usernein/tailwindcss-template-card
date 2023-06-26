@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
       - name: Build card
         run: docker-compose up build
       - name: Check if tag is a prerelease
@@ -19,10 +22,19 @@ jobs:
           if [[ ${{ github.event.ref }} =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+\-.+$ ]]; then
               echo "prerelease=true" >> $GITHUB_OUTPUT
           fi
+      - uses: cardinalby/git-get-release-action@v1
+        id: get-latest-release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          latest: 1
+          draft: false
+      - name: Generate CHANGELOG
+        run: npx -y git-changelog-command-line -fr refs/tags/${{ steps.get-latest-release.outputs.tag_name }} -of CHANGELOG-release.md
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          body_path: CHANGELOG.md
+          body_path: CHANGELOG-release.md
           append_body: true
           generate_release_notes: true
           prerelease: "${{ steps.check-tag.outputs.prerelease }}"
