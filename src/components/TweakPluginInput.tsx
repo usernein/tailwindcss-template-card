@@ -1,6 +1,5 @@
 import { useContext } from 'preact/hooks'
 import { ConfigContext } from '@store/ConfigContext'
-import { ConfigState } from '@store/ConfigReducer'
 import { FloatingInput } from '@components/FloatingInput'
 
 export function TweakPluginInput ({

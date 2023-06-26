@@ -1,5 +1,4 @@
 import { createContext } from "preact"
-import { ConfigState } from "./ConfigReducer"
 
 export type ConfigContextValues = {
   config: ConfigState

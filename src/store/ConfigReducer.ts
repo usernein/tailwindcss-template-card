@@ -1,36 +1,4 @@
 import { useReducer } from 'preact/hooks'
-import { Binding, BindAction } from '..'
-
-export enum ConfigActionTypes {
-  SET_CONFIG
-}
-
-export type ConfigReducerAction = {
-  action_type: ConfigActionTypes
-  dispatch_event: boolean
-  payload: any
-}
-
-export enum CodeEditorOptionsEnum {
-  ACE = 'Ace',
-  TEXTAREA = 'Textarea',
-  CODEMIRROR_DEV = 'CodeMirror_dev'
-}
-
-export type ConfigState = {
-  entity: string
-  ignore_line_breaks: boolean
-  always_update: boolean
-  content: string
-  entities: string[]
-  parse_jinja: boolean
-  plugins: {
-    [key: string]: { enabled: boolean; url?: string; theme?: string }
-  }
-  code_editor: CodeEditorOptionsEnum
-  bindings: Binding[]
-  actions: BindAction[]
-}
 
 export const ConfigReducer = (
   state: ConfigState,
