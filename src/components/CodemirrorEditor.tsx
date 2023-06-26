@@ -1,53 +1,27 @@
-// @ts-nocheck
 export function CodemirrorEditor ({
   value,
-  onChange,
-  debounceChangePeriod
+  onChange
 }: {
   value: string
   onChange: (value: string) => void
-  debounceChangePeriod: number
 }) {
-  let timeoutPointer: NodeJS.Timeout
-
-  const haCodeEditor = document.createElement('ha-code-editor')
-  // @t
+  const haCodeEditor = document.createElement(
+    'ha-code-editor'
+  ) as HTMLElement & { value: string }
   haCodeEditor.value = value
   haCodeEditor.addEventListener('value-changed', e => {
-    if (timeoutPointer) {
-      clearTimeout(timeoutPointer)
-    }
     const value = (e.target as HTMLInputElement).value
-
-    timeoutPointer = setTimeout(() => {
-      onChange(value)
-    }, debounceChangePeriod)
+    onChange(value)
   })
 
   return (
     <div
       ref={ref => {
         if (ref) {
-          ref.innerHTML = '';
+          ref.innerHTML = ''
           ref.appendChild(haCodeEditor)
         }
       }}
     ></div>
-    // <textarea
-    //   value={value}
-    //   onInput={e => {
-    //     if (timeoutPointer) {
-    //       clearTimeout(timeoutPointer)
-    //     }
-    //     const value = (e.target as HTMLInputElement).value
-
-    //     timeoutPointer = setTimeout(() => {
-    //       onChange(value)
-    //     }, debounceChangePeriod)
-    //   }}
-    //   class='textarea textarea-accent h-48 font-mono rounded-xl w-full leading-4'
-    //   placeholder={`<div class=''></div>`}
-    //   spellcheck={false}
-    // ></textarea>
   )
 }

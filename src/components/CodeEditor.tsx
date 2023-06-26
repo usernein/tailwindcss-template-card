@@ -1,18 +1,15 @@
-import 'ace-builds'
 import 'ace-builds/src-noconflict/ace'
 import 'ace-builds/src-noconflict/mode-html'
 import 'ace-builds/src-noconflict/theme-github_dark'
 import 'ace-builds/src-noconflict/snippets/html'
 import 'ace-builds/src-noconflict/ext-language_tools'
-import 'ace-builds/src-noconflict/ext-emmet'
-// import htmlWorkerUrl from 'ace-builds/src-noconflict/worker-html?worker&inline'
-// ace.config.setModuleUrl('ace/mode/html_worker', htmlWorkerUrl)
+
 import AceEditor from 'react-ace'
 import { CodemirrorEditor } from '@components/CodemirrorEditor'
 import { TextareaEditor } from '@components/TextareaEditor'
-import { useContext, useMemo } from 'preact/compat'
-import { ConfigContext } from '@store/ConfigContext'
 import { CodeEditorOptionsEnum } from '../types'
+import { useConfigMemo } from '@store/useConfigMemo'
+import { useDebouncer } from '@utils/DebounceHandler'
 
 export function CodeEditor ({
   value,
@@ -21,9 +18,15 @@ export function CodeEditor ({
   value: string
   onChange: (value: string) => void
 }) {
-  const { config } = useContext(ConfigContext)
+  const { debounceChangePeriod, code_editor: codeEditor } = useConfigMemo('debounceChangePeriod', 'code_editor')
+  const debounce = useDebouncer(debounceChangePeriod)
 
-  const codeEditor = useMemo(() => config.code_editor, [config.code_editor])
+  const debounceAndChange = (v: string) => {
+    debounce(() => {
+      onChange(v)
+    })
+  }
+
   return (
     <div className='h-48 w-full'>
       {codeEditor == CodeEditorOptionsEnum.ACE && (
@@ -44,23 +47,21 @@ export function CodeEditor ({
             enableSnippets: true
           }}
           value={value}
-          onChange={onChange}
+          onChange={debounceAndChange}
         />
       )}
 
       {codeEditor == CodeEditorOptionsEnum.TEXTAREA && (
         <TextareaEditor
           value={value}
-          onChange={onChange}
-          debounceChangePeriod={500}
+          onChange={debounceAndChange}
         />
       )}
 
       {codeEditor == CodeEditorOptionsEnum.CODEMIRROR_DEV && (
         <CodemirrorEditor
           value={value}
-          onChange={onChange}
-          debounceChangePeriod={500}
+          onChange={debounceAndChange}
         />
       )}
     </div>

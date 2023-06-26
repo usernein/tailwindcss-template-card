@@ -27,7 +27,6 @@ export const SettingsBindings = () => {
                 isMinimized={maximizedBind !== index}
                 maximize={() => maximize(index)}
                 onChange={value => {
-                  console.log({ value })
                   updateConfig({
                     bindings: bindings.map((v, i) => (i === index ? value : v))
                   })

@@ -2,6 +2,8 @@ import { useContext } from 'preact/hooks'
 import { ConfigContext } from '@store/ConfigContext'
 import { FloatingInput } from '@components/FloatingInput'
 import { ConfigState } from '@types'
+import { useDebouncer } from '@utils/DebounceHandler'
+import { useConfigMemo } from '@store/useConfigMemo'
 
 export function TweakPluginInput ({
   label,
@@ -12,20 +14,25 @@ export function TweakPluginInput ({
   plugin: keyof ConfigState['plugins']
   option: keyof ConfigState['plugins'][typeof plugin]
 }) {
-  const { config, updateConfig } = useContext(ConfigContext)
+  const { updateConfig } = useContext(ConfigContext)
+  const { debounceChangePeriod, plugins } = useConfigMemo('debounceChangePeriod', 'plugins')
+  const debounce = useDebouncer(debounceChangePeriod)
 
   return (
     <FloatingInput
-      value={config.plugins.daisyui.url ?? ''}
+      value={plugins.daisyui.url ?? ''}
       label={label}
+      className='w-full'
       onChange={value => {
-        updateConfig({
-          plugins: {
-            [plugin]: {
-              ...config.plugins[plugin],
-              [option]: value
+        debounce(() => {
+          updateConfig({
+            plugins: {
+              [plugin]: {
+                ...plugins[plugin],
+                [option]: value
+              }
             }
-          }
+          })
         })
       }}
     />

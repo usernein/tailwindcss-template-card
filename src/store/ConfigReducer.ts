@@ -37,6 +37,7 @@ export const defaultConfigState: ConfigState = {
   entities: [],
   bindings: [],
   actions: [],
+  debounceChangePeriod: 500,
   plugins: {
     daisyui: {
       enabled: true,

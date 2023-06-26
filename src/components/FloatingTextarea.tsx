@@ -7,6 +7,7 @@ export function FloatingTextarea ({
   value: string
   onChange: (value: string) => void
 }) {
+
   return (
     <div class='w-full flex flex-col-reverse p-1'>
       <textarea

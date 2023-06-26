@@ -30,6 +30,7 @@
       "@store/*": ["./store/*"],
       "@elements/*": ["./elements/*"],
       "@types": ["./types"],
+      "@utils/*": ["./utils/*"],
     }
   },
   "include": ["src"],

@@ -2,6 +2,8 @@ import { FloatingInput } from '@components/FloatingInput'
 import { FloatingTextarea } from './FloatingTextarea'
 import clsx from 'clsx'
 import { Binding } from '@types'
+import { useDebouncer } from '@utils/DebounceHandler'
+import { useConfigMemo } from '@store/useConfigMemo'
 
 export function BindingConfig ({
   binding,
@@ -20,6 +22,16 @@ export function BindingConfig ({
 
     if (maximize) maximize()
   }
+
+  const { debounceChangePeriod } = useConfigMemo('debounceChangePeriod')
+  const debounce = useDebouncer(debounceChangePeriod)
+
+  const debounceAndChange = (b: Binding) => {
+    debounce(() => {
+      onChange(b)
+    })
+  }
+
   return (
     <div
       class={clsx(
@@ -36,20 +48,20 @@ export function BindingConfig ({
         <FloatingInput
           label='Selector'
           value={binding.selector}
-          onChange={value => onChange({ ...binding, selector: value })}
+          onChange={value => debounceAndChange({ ...binding, selector: value })}
           isMinimized={isMinimized}
         />
         <FloatingInput
           label='Type'
           value={binding.type}
-          onChange={value => onChange({ ...binding, type: value })}
+          onChange={value => debounceAndChange({ ...binding, type: value })}
           isMinimized={isMinimized}
         />
         <div className={clsx('w-full transition-all duration-300', isMinimized && 'hidden')}>
           <FloatingTextarea
             label='Bind'
             value={binding.bind}
-            onChange={value => onChange({ ...binding, bind: value })}
+            onChange={value => debounceAndChange({ ...binding, bind: value })}
           />
         </div>
       </div>

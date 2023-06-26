@@ -4,15 +4,17 @@ export function FloatingInput ({
   label,
   value,
   onChange,
-  isMinimized
+  isMinimized,
+  className
 }: {
   label: string
   value: string
   onChange: (value: string) => void
   isMinimized?: boolean
+  className?: string
 }) {
   return (
-    <div class='relative p-1 w-[50%] flex flex-col-reverse'>
+    <div class={clsx('relative p-1 w-[50%] flex flex-col-reverse', className)}>
       <input
         type='text'
         name='floating_outlined'
