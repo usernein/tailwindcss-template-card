@@ -55,4 +55,7 @@ export type ConfigState = {
   code_editor: CodeEditorOptionsEnum
   bindings: Binding[]
   actions: BindAction[]
+  debounceChangePeriod: number
 }
+
+export type ConfigStateValue = ConfigState[keyof ConfigState]
