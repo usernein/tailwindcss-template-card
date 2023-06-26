@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 18
       - name: Build card
-        run: npm install && npm run build
+        run: yarn && yarn build
       - name: Check if tag is a prerelease
         id: check-tag
         run: |
