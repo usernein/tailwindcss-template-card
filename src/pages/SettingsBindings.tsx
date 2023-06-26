@@ -19,7 +19,7 @@ export const SettingsBindings = () => {
         <input type='checkbox' />
         <div className='collapse-title text-md font-medium'>Bindings</div>
         <div className='collapse-content flex flex-row flex-wrap gap-2 max-h-min transition-[height] duration-300 delay-1000'>
-          <div className='w-fit scrollbar-thin overflow-x-auto flex flex-col items-center gap-2 flex-wrap max-h-96 '>
+          <div className='w-fit scrollbar-thin scrollbar-track-base-200 scrollbar-thumb-white/5 overflow-x-auto flex flex-col items-center gap-2 flex-wrap max-h-96 '>
             {bindings.map((binding: Binding, index: keyof typeof bindings) => (
               <BindingConfig
                 key={index}
