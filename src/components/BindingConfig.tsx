@@ -35,8 +35,8 @@ export function BindingConfig ({
   return (
     <div
       class={clsx(
-        'flex flex-col gap-2 justify-center bg-base-100 p-2 rounded-[var(--rounded-box)] transition-[height] duration-300 w-80 h-fit cursor-pointer hover:brightness-110',
-        isMinimized ? 'opacity-70' : ''
+        'flex flex-col gap-2 justify-start bg-base-100 p-2 rounded-[var(--rounded-box)] origin-top transition-[height] duration-300 w-80 cursor-pointer overflow-hidden',
+        isMinimized ? 'h-20 brightness-75' : 'h-40'
       )}
       {...(isMinimized
         ? {
