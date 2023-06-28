@@ -1,24 +1,31 @@
-import 'ace-builds/src-noconflict/ace'
-import 'ace-builds/src-noconflict/mode-html'
-import 'ace-builds/src-noconflict/theme-github_dark'
-import 'ace-builds/src-noconflict/snippets/html'
-import 'ace-builds/src-noconflict/ext-language_tools'
-
-import AceEditor from 'react-ace'
-import { CodemirrorEditor } from '@components/CodemirrorEditor'
-import { TextareaEditor } from '@components/TextareaEditor'
-import { CodeEditorOptionsEnum } from '../types'
 import { useConfigMemo } from '@store/useConfigMemo'
+import { CodeEditorOptionsEnum } from '@types'
 import { useDebouncer } from '@utils/DebounceHandler'
+import { AceEditor } from './AceEditor'
+import { TextareaEditor } from './TextareaEditor'
+import { CodemirrorEditor } from './CodemirrorEditor'
+import clsx from 'clsx'
+import { IAceOptions } from 'react-ace'
+import { useEffect } from 'preact/hooks'
 
 export function CodeEditor ({
   value,
-  onChange
+  onChange,
+  additionalOptions,
+  className,
+  mode = 'html'
 }: {
   value: string
   onChange: (value: string) => void
+  additionalOptions?: IAceOptions
+  className?: string
+  mode?: string
 }) {
-  const { debounceChangePeriod, code_editor: codeEditor } = useConfigMemo('debounceChangePeriod', 'code_editor')
+  const { debounceChangePeriod, code_editor: codeEditor } = useConfigMemo(
+    'debounceChangePeriod',
+    'code_editor'
+  )
+
   const debounce = useDebouncer(debounceChangePeriod)
 
   const debounceAndChange = (v: string) => {
@@ -28,41 +35,17 @@ export function CodeEditor ({
   }
 
   return (
-    <div className='h-48 w-full'>
+    <div className={clsx('h-48 w-full', className)}>
       {codeEditor == CodeEditorOptionsEnum.ACE && (
-        // @ts-ignore
-        <AceEditor
-          mode='html'
-          theme='github_dark'
-          name='tailwindcss-template-card-config-ace'
-          height='100%'
-          width='100%'
-          editorProps={{ $blockScrolling: true }}
-          debounceChangePeriod={500}
-          setOptions={{
-            useWorker: false,
-            enableEmmet: true,
-            enableBasicAutocompletion: true,
-            enableLiveAutocompletion: true,
-            enableSnippets: true
-          }}
-          value={value}
-          onChange={debounceAndChange}
-        />
+        <AceEditor value={value} onChange={debounceAndChange} additionalOptions={additionalOptions} mode={mode} />
       )}
 
       {codeEditor == CodeEditorOptionsEnum.TEXTAREA && (
-        <TextareaEditor
-          value={value}
-          onChange={debounceAndChange}
-        />
+        <TextareaEditor value={value} onChange={debounceAndChange} />
       )}
 
       {codeEditor == CodeEditorOptionsEnum.CODEMIRROR_DEV && (
-        <CodemirrorEditor
-          value={value}
-          onChange={debounceAndChange}
-        />
+        <CodemirrorEditor value={value} onChange={debounceAndChange} />
       )}
     </div>
   )

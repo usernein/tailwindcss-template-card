@@ -1,0 +1,7 @@
+.ace_scrollbar {
+  @apply scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-base-200
+}
+
+.ace_editor {
+  @apply rounded-[5px]
+}

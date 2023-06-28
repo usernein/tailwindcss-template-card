@@ -1,21 +1,22 @@
 import clsx from 'clsx'
+import { CodeEditor } from './CodeEditor'
 
 export function FloatingInput ({
   label,
   value,
   onChange,
-  isMinimized,
-  className
+  className,
+  mode = 'html'
 }: {
   label: string
   value: string
   onChange: (value: string) => void
-  isMinimized?: boolean
   className?: string
+  mode?: string
 }) {
   return (
     <div class={clsx('relative p-1 w-[50%] flex flex-col-reverse', className)}>
-      <input
+      {/* <input
         type='text'
         name='floating_outlined'
         value={value}
@@ -27,7 +28,8 @@ export function FloatingInput ({
         placeholder={label}
         autoComplete={'off'}
         spellcheck={false}
-      />
+      /> */}
+      <CodeEditor value={value} onChange={onChange} additionalOptions={{showGutter: false, highlightActiveLine: false}} className='w-full h-full' mode={mode}/>
       <label
         for='floating_outlined'
         class='flex text-base-content peer-hover:text-[hsl(var(--a))] peer-hover:scale-110 peer-focus:scale-110 peer-focus:text-[hsl(var(--a))] duration-300 w-fit opacity-100 peer-placeholder-shown:hidden'
