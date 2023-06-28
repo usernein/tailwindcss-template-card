@@ -33,6 +33,10 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
   updateEntitiesToWatch () {
     this._entitiesToWatch = []
 
+    if (this._config.entity) {
+      this._entitiesToWatch.push(this._config.entity)
+    }
+
     if (this._config.entities && Array.isArray(this._config.entities)) {
       this._config.entities.forEach((entity: string) => {
         this._entitiesToWatch.push(entity)
@@ -47,13 +51,32 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
       return
 
     Object.keys(this._hass.states).forEach((entity_id: string) => {
-      if (!this._hass || !this._config || this._config.content === undefined)
-        return
+      if (!this._hass || !this._config || this._config.content === undefined) {
+        return false
+      }
 
-      if (this._config.content.includes(entity_id)) {
+      const content = this._config.content
+
+      if (
+        content.includes(entity_id) ||
+        this.checkIfEntityIsUsedByBinding(entity_id)
+      ) {
         this._entitiesToWatch.push(entity_id)
       }
     })
+  }
+
+  checkIfEntityIsUsedByBinding (entity_id: string) {
+    if (!this._hass || !this._config || this._config.content === undefined) {
+      return null
+    }
+
+    for (const binding of this._config.bindings) {
+      if (binding.bind.includes(entity_id)) {
+        return true
+      }
+    }
+    return false
   }
 
   renderIfNeeded (forceUpdate?: boolean) {
@@ -72,6 +95,7 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
       return true
 
     for (const entity_id of this._entitiesToWatch) {
+      if (!this._hass.states[entity_id]) continue
       if (
         this._oldHass.states[entity_id] !== this._hass.states[entity_id] ||
         this._oldHass.states[entity_id].attributes !==
@@ -200,11 +224,11 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
       )
       const nextState = getState.call(
         element,
-        this.hass,
+        this._hass,
         this._config,
         entity,
-        entity?.state,
-        entity?.attributes
+        entity ? entity.state : undefined,
+        entity ? entity.attributes : undefined
       )
       return nextState
     } catch (e) {
