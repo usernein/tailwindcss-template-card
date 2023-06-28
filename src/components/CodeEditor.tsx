@@ -6,7 +6,6 @@ import { TextareaEditor } from './TextareaEditor'
 import { CodemirrorEditor } from './CodemirrorEditor'
 import clsx from 'clsx'
 import { IAceOptions } from 'react-ace'
-import { useEffect } from 'preact/hooks'
 
 export function CodeEditor ({
   value,
