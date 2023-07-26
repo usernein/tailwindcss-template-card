@@ -1,29 +1,30 @@
-import { CodeEditorOptionsEnum, ConfigActionTypes, ConfigReducerAction, ConfigState } from '@types'
+import {
+  CodeEditorOptionsEnum,
+  ConfigActionTypes,
+  ConfigReducerAction,
+  ConfigState
+} from '@types'
 import { useReducer } from 'preact/hooks'
 
 export const ConfigReducer = (
   state: ConfigState,
   action: ConfigReducerAction
 ) => {
-  switch (action.action_type) {
-    case ConfigActionTypes.SET_CONFIG:
-      const newConfig = { ...state, ...action.payload } as ConfigState
+  if (action.action_type == ConfigActionTypes.SET_CONFIG) {
+    const newConfig = { ...state, ...action.payload } as ConfigState
 
-      if (action.dispatch_event) {
-        const event = new CustomEvent(
-          'tailwindcss-template-card-config-edited',
-          {
-            bubbles: true,
-            composed: true,
-            detail: { config: newConfig }
-          }
-        )
-        window.dispatchEvent(event)
-      }
+    if (action.dispatch_event) {
+      const event = new CustomEvent('tailwindcss-template-card-config-edited', {
+        bubbles: true,
+        composed: true,
+        detail: { config: newConfig }
+      })
+      window.dispatchEvent(event)
+    }
 
-      return newConfig
-    default:
-      return state
+    return newConfig
+  } else {
+    return state
   }
 }
 
