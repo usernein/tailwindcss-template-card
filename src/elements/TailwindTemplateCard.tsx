@@ -90,7 +90,8 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
       !this._hass ||
       !this._oldHass ||
       !this._entitiesToWatch ||
-      this._config.always_update
+      this._config.always_update ||
+      this._oldConfig['bindings'] != this._config['bindings']
     )
       return true
 
