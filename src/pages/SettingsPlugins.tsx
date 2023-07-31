@@ -54,7 +54,7 @@ export const SettingsPlugins = () => {
             >
               <option selected>inherit</option>
               {Object.values(DAISYUI_THEMES).map(({ theme, scheme }) => (
-                <option key={theme} value={theme}>
+                <option key={theme} value={`${scheme} - ${theme}`}>
                   {scheme} - {theme}
                 </option>
               ))}

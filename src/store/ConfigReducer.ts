@@ -43,7 +43,7 @@ export const defaultConfigState: ConfigState = {
     daisyui: {
       enabled: true,
       url: DAISYUI_CDN_URL,
-      theme: 'dark',
+      theme: 'dark - dark',
       overrideCardBackground: false
     },
     tailwindElements: {

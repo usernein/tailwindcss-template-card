@@ -4,6 +4,7 @@ import { SettingsTweaks } from '@pages/SettingsTweaks'
 import { SettingsCardContent } from '@pages/SettingsCardContent'
 import { SettingsPlugins } from '@pages/SettingsPlugins'
 import { WithDaisyUitheme } from './WithDaisyUitheme'
+import { DarkModeToggle } from './DarkModeToggle'
 // import { SettingsAbout } from '@pages/SettingsAbout'
 
 type ActiveTabState = {
@@ -43,19 +44,23 @@ export function HaCardConfig () {
   return (
     <WithDaisyUitheme className='w-full flex flex-col justify-center items-center rounded-xl bg-base-300 p-4'>
       <div className='form-control w-full gap-3 justify-evenly'>
-        <div className='tabs flex justify-center w-full'>
-          <ConfigTab activeState={activeState} tabKey={0}>
-            Content
-          </ConfigTab>
-          <ConfigTab activeState={activeState} tabKey={1}>
-            Tweaks
-          </ConfigTab>
-          <ConfigTab activeState={activeState} tabKey={2}>
-            Plugins
-          </ConfigTab>
-          {/* <ConfigTab activeState={activeState} tabKey={3}>
-            About
-          </ConfigTab> */}
+        <div class='flex flex-row'>
+          <div className='flex-grow'></div>
+          <div className='tabs flex justify-center flex-grow'>
+            <ConfigTab activeState={activeState} tabKey={0}>
+              Content
+            </ConfigTab>
+            <ConfigTab activeState={activeState} tabKey={1}>
+              Tweaks
+            </ConfigTab>
+            <ConfigTab activeState={activeState} tabKey={2}>
+              Plugins
+            </ConfigTab>
+            {/* <ConfigTab activeState={activeState} tabKey={3}>
+                        About
+                      </ConfigTab> */}
+          </div>
+          <DarkModeToggle />
         </div>
 
         {activeState[0].index == 0 && <SettingsCardContent />}

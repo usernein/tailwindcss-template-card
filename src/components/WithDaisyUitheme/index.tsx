@@ -1,4 +1,5 @@
 import { ConfigContext } from '@store/ConfigContext'
+import clsx from 'clsx'
 import { useMemo, PropsWithChildren, useContext } from 'preact/compat'
 
 export function WithDaisyUitheme ({
@@ -11,11 +12,16 @@ export function WithDaisyUitheme ({
     () => config.plugins.daisyui.theme ?? 'inherit',
     [config.plugins.daisyui.theme]
   )
+
+  // split string by " - "
+  const [scheme, theme] = daisyUiTheme.split(' - ')
+  console.log({ scheme, theme })
+
   const attributes = ['inherit', 'auto'].includes(daisyUiTheme)
     ? {}
-    : { 'data-theme': daisyUiTheme }
+    : { 'data-theme': theme }
   return (
-    <div {...attributes} className={className}>
+    <div {...attributes} className={clsx(scheme, className)}>
       {children}
     </div>
   )
