@@ -22,7 +22,7 @@ export function TweakPluginInput ({
 
   return (
     <FloatingInput
-      value={plugins.daisyui.url ?? 'aaa'}
+      value={plugins.daisyui.url ?? ''}
       label={label}
       className='w-full h-16'
       onChange={value => {
