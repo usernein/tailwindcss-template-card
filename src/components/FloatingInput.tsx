@@ -1,12 +1,10 @@
 import clsx from 'clsx'
-import { CodeEditor } from './CodeEditor'
 
 export function FloatingInput ({
   label,
-  value,
-  onChange,
   className,
-  mode = 'html'
+  value,
+  onChange
 }: {
   label: string
   value: string
@@ -29,7 +27,12 @@ export function FloatingInput ({
         autoComplete={'off'}
         spellcheck={false}
       /> */}
-      <CodeEditor value={value} onChange={onChange} additionalOptions={{showGutter: false, highlightActiveLine: false}} className='w-full h-full' mode={mode}/>
+      <input
+        className='input'
+        defaultValue={value}
+        onChange={e => onChange((e.target as HTMLInputElement).value)}
+        spellCheck={false}
+      />
       <label
         for='floating_outlined'
         class='flex text-base-content peer-hover:text-[hsl(var(--a))] peer-hover:scale-110 peer-focus:scale-110 peer-focus:text-[hsl(var(--a))] duration-300 w-fit opacity-100 peer-placeholder-shown:hidden'

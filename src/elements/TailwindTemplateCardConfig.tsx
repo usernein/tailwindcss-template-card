@@ -1,12 +1,15 @@
 import { render } from 'preact'
-import { HaCardConfig } from '@components/HaCardConfig'
 
 // support shadowroot.adoptedStyleSheets in all browsers
 import 'construct-style-sheets-polyfill'
 import { TailwindTemplateRenderer } from './TailwindTemplateRenderer'
 import { fulfillWithDefaults } from '@store/ConfigReducer'
-import { ConfigProvider } from '@store/ConfigProvider'
 import { ConfigState } from '@types'
+import { CardEvents, registerCardEventHandler } from '@utils/events'
+// import { HaCardConfigWrapper } from '@components/HaCardConfigWrapper'
+import { ConfigProvider } from '@store/ConfigProvider'
+import { HaCardConfig } from '@components/HaCardConfig'
+import React from 'preact/compat'
 
 export class TailwindTemplateCardConfig extends TailwindTemplateRenderer {
   constructor () {
@@ -14,29 +17,36 @@ export class TailwindTemplateCardConfig extends TailwindTemplateRenderer {
 
     this._force_daisyui = true
     this._ignore_broken_config = true
+    this._rerender_after_set_config = false
+    this._rerender_after_set_hass = false
+    this._dispatch_config_setup_event = true
 
-    window.addEventListener('tailwindcss-template-card-config-edited', ((
-      e: CustomEvent
-    ) => {
-      const config = e.detail.config as Partial<ConfigState>
+    registerCardEventHandler(CardEvents.CONFIG_CHANGED, (e: Event) => {
+      console.log('config changed', e)
+      const detail = (e as CustomEvent).detail
+      const config = detail.config as Partial<ConfigState>
       this.configChanged(fulfillWithDefaults(config))
-    }) as EventListener)
+    })
+
+    console.log('card element created')
+    this._render()
   }
 
-  configChanged (newConfig: any) {
+  configChanged (newConfig: ConfigState) {
     const event = new CustomEvent('config-changed', {
       bubbles: true,
       composed: true,
-      detail: { config: { ...this._config, ...newConfig } }
+      detail: { config: newConfig }
     })
 
     this.dispatchEvent(event)
   }
 
   _render () {
+    const MemoizedCardConfig = React.memo(HaCardConfig)
     render(
       <ConfigProvider>
-        <HaCardConfig />
+        <MemoizedCardConfig />
       </ConfigProvider>,
       this.shadow
     )

@@ -1,4 +1,4 @@
-import { HomeAssistant } from "custom-card-helpers";
+import { HomeAssistant } from 'custom-card-helpers'
 
 declare global {
   interface Window {
@@ -33,7 +33,7 @@ export enum ConfigActionTypes {
 export type ConfigReducerAction = {
   action_type: ConfigActionTypes
   dispatch_event: boolean
-  payload: any
+  payload: Partial<ConfigState> | object
 }
 
 export enum CodeEditorOptionsEnum {
@@ -41,6 +41,10 @@ export enum CodeEditorOptionsEnum {
   TEXTAREA = 'Textarea',
   CODEMIRROR_DEV = 'CodeMirror_dev'
 }
+
+type PluginOptions = { enabled: boolean; url?: string; theme?: string }
+
+type DaisyUIOptions = { overrideCardBackground: boolean }
 
 export type ConfigState = {
   entity: string
@@ -50,7 +54,8 @@ export type ConfigState = {
   entities: string[]
   parse_jinja: boolean
   plugins: {
-    [key: string]: { enabled: boolean; url?: string; theme?: string }
+    daisyui: PluginOptions & DaisyUIOptions,
+    tailwindElements: PluginOptions
   }
   code_editor: CodeEditorOptionsEnum
   bindings: Binding[]

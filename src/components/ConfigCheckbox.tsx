@@ -1,14 +1,14 @@
 import { clsx } from 'clsx'
+import { PropsWithChildren } from 'preact/compat'
 export function ConfigCheckbox ({
   checked,
   disabled = false,
   onChange,
   children
-}: {
+}: PropsWithChildren & {
   checked: boolean
   disabled?: boolean
   onChange: (checked: boolean) => void
-  children: any
 }) {
   return (
     <div

@@ -4,7 +4,12 @@ import {
   ConfigReducerAction,
   ConfigState
 } from '@types'
-import { useReducer } from 'preact/hooks'
+import {
+  CardEvents,
+  dispatchCardEvent,
+  registerCardEventHandler
+} from '@utils/events'
+import { useEffect, useReducer } from 'preact/hooks'
 
 export const ConfigReducer = (
   state: ConfigState,
@@ -14,12 +19,7 @@ export const ConfigReducer = (
     const newConfig = { ...state, ...action.payload } as ConfigState
 
     if (action.dispatch_event) {
-      const event = new CustomEvent('tailwindcss-template-card-config-edited', {
-        bubbles: true,
-        composed: true,
-        detail: { config: newConfig }
-      })
-      window.dispatchEvent(event)
+      dispatchCardEvent(CardEvents.CONFIG_CHANGED, { config: newConfig })
     }
 
     return newConfig
@@ -38,12 +38,16 @@ export const defaultConfigState: ConfigState = {
   entities: [],
   bindings: [],
   actions: [],
-  debounceChangePeriod: 500,
+  debounceChangePeriod: 100,
   plugins: {
     daisyui: {
       enabled: true,
       url: DAISYUI_CDN_URL,
-      theme: 'dark'
+      theme: 'dark',
+      overrideCardBackground: false
+    },
+    tailwindElements: {
+      enabled: false
     }
   }
 }
@@ -59,6 +63,9 @@ export const initialConfigState: ConfigState = {
 }
 
 export const useConfigReducer = () => {
+  useEffect(() => {
+    console.log('useConfigReducer updated')
+  })
   const [state, dispatch] = useReducer(ConfigReducer, initialConfigState)
 
   const updateConfig = (
@@ -72,13 +79,12 @@ export const useConfigReducer = () => {
     })
   }
 
-  window.addEventListener('tailwindcss-template-card-config-received', ((
-    e: CustomEvent
-  ) => {
-    const config = e.detail.config as Partial<ConfigState>
+
+  registerCardEventHandler(CardEvents.CONFIG_RECEIVED, (e: Event) => {
+    const config = (e as CustomEvent).detail.config as ConfigState
     const filledConfig = fulfillWithDefaults(config)
     updateConfig(filledConfig, false)
-  }) as EventListener)
+  })
 
   return {
     config: state,

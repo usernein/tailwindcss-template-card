@@ -1,3 +1,4 @@
+import 'preact/debug'
 import { TailwindTemplateCard } from './elements/TailwindTemplateCard.tsx'
 import { TailwindTemplateCardConfig } from './elements/TailwindTemplateCardConfig.tsx'
 

@@ -17,27 +17,29 @@ export const SettingsBindings = () => {
 
   return (
     <div className='collapse collapse-arrow bg-base-200'>
-      <input type='checkbox' />
+      <input type='checkbox' className='peer' />
       <div className='collapse-title text-md font-medium'>Bindings</div>
-      <div className='collapse-content flex flex-row flex-wrap gap-2'>
-        <div className='w-full scrollbar-thin scrollbar-track-base-200 scrollbar-thumb-white/5 overflow-x-auto flex flex-col gap-2 flex-wrap justify-start items-start max-h-96'>
-          {bindings.map((binding: Binding, index: keyof typeof bindings) => (
-            <BindingConfig
-              key={index}
-              binding={binding}
-              isMinimized={maximizedBind !== index}
-              maximize={() => maximize(index)}
-              onChange={value => {
-                updateConfig({
-                  bindings: bindings.map((v, i) => (i === index ? value : v))
-                })
-              }}
-            />
-          ))}
+      <div className='collapse-content flex flex-col w-full max-w-full overflow-hidden'>
+        <div className='scrollbar-thin scrollbar-track-base-200 scrollbar-thumb-white/5 overflow-x-scroll w-full'>
+          <div className='gap-2 p-2 grid grid-rows-3 grid-flow-col-dense w-full max-h-64 empty:hidden '>
+            {bindings.map((binding: Binding, index: keyof typeof bindings) => (
+              <BindingConfig
+                key={index}
+                binding={binding}
+                isMinimized={maximizedBind !== index}
+                maximize={() => maximize(index)}
+                onChange={value => {
+                  updateConfig({
+                    bindings: bindings.map((v, i) => (i === index ? value : v))
+                  })
+                }}
+              />
+            ))}
+          </div>
         </div>
-        <div className='w-full flex justify-end p-2'>
+        <div className='w-full flex justify-end'>
           <button
-            class={'btn btn-accent btn-sm btn-'}
+            class={'btn btn-accent btn-sm'}
             onClick={() =>
               updateConfig({
                 bindings: [...bindings, { type: '', selector: '', bind: '' }]

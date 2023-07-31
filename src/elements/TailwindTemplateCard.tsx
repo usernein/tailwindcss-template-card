@@ -80,6 +80,10 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
   }
 
   renderIfNeeded (forceUpdate?: boolean) {
+    console.log({
+      doesBindingsDiffer:
+        this._oldConfig['bindings'] != this._config['bindings']
+    })
     if (forceUpdate || this.needsRender()) {
       this.processAndRender()
     }
@@ -117,6 +121,7 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
       return
 
     let content = this._config.content
+    console.log('content', content)
 
     if (
       undefined !== this._config.ignore_line_breaks &&
@@ -149,7 +154,9 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
   }
 
   _renderHtmlContent () {
+    console.log('rendering html content', this._htmlContent)
     this.ensureIsReadyForRender()
+    console.log('is ready for render', this._htmlContent)
 
     render(
       <HaCard htmlContent={this._htmlContent} config={this._config} />,
@@ -175,6 +182,7 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
   }
 
   applyBindings () {
+    console.log('bindings', this._config.bindings)
     if (!this._config.bindings) return
 
     this._config.bindings.forEach((binding: Binding) => {
@@ -184,6 +192,7 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
       matches.forEach(match => {
         const result = this.resolveBindValue(match, binding.bind)
         const target = match as HTMLElement
+        const targetAsInput = target as HTMLInputElement
 
         switch (binding.type) {
           case 'text':
@@ -196,7 +205,7 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
             result && target.classList.add(result)
             break
           case 'checked':
-            ;(target as HTMLInputElement).checked = Boolean(result)
+            targetAsInput.checked = Boolean(result)
             break
           default:
             if (typeof result === 'undefined' || '' === `${result}`) {

@@ -1,4 +1,4 @@
-import { ConfigState } from "@types"
+import { ConfigState } from '@types'
 
 export function HaCard ({
   htmlContent,
@@ -11,13 +11,22 @@ export function HaCard ({
   const attributes = ['inherit', 'auto'].includes(theme)
     ? {}
     : { 'data-theme': theme }
+  const unsetBackgroundStyles = { background: 'unset', color: 'unset' }
 
   return (
     <>
-      {/* @ts-ignore */}
-      <ha-card {...attributes}>
-        <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
-        {/* @ts-ignore */}
+      {/* @ts-expect-error tag <ha-card> is not native */}
+      <ha-card>
+        <div
+          style={
+            config.plugins.daisyui.overrideCardBackground
+              ? {}
+              : unsetBackgroundStyles
+          }
+          {...attributes}
+          dangerouslySetInnerHTML={{ __html: htmlContent }}
+        />
+        {/* @ts-expect-error <ha-card> is not native */}
       </ha-card>
     </>
   )

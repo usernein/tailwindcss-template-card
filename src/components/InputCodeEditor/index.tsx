@@ -1,27 +1,43 @@
-import { ContentEditor } from "./ContentEditor"
+import { CodeEditor } from '@components/CodeEditor'
+import clsx from 'clsx'
 
-export function FloatingTextarea ({
+export function InputCodeEditor ({
   label,
-  mode = 'html'
+  value,
+  onChange,
+  className,
+  mode = 'html',
+  emulateTextarea = false
 }: {
   label: string
   value: string
   onChange: (value: string) => void
+  className?: string
   mode?: string
+  emulateTextarea?: boolean
 }) {
-
   return (
-    <div class='w-full h-full flex flex-col-reverse p-1'>
-      {/* <textarea
+    <div class={clsx('relative p-1 w-full flex flex-col-reverse', emulateTextarea && 'w-full h-full', className)}>
+      {/* <input
+        type='text'
         name='floating_outlined'
         value={value}
         onInput={e => onChange((e.target as HTMLInputElement).value)}
-        class='bg-white/5 text-sm w-full z-10 textarea min-h-full leading-4 peer focus:outline-none resize-y ring-0 placeholder:text-[hsl(var(--er))] placeholder-shown:ring-1 placeholder-shown:ring-[hsl(var(--er))]'
+        class={clsx(
+          'bg-white/5 text-sm z-10 w-full input h-10 peer focus:outline-none ring-0 placeholder:text-[hsl(var(--er))] placeholder-shown:ring-1 placeholder-shown:ring-[hsl(var(--er))]',
+          isMinimized ? 'text-base-content/50' : ''
+        )}
         placeholder={label}
         autoComplete={'off'}
         spellcheck={false}
       /> */}
-      <ContentEditor additionalOptions={{showGutter: false, highlightActiveLine: false}} className='w-full h-full' mode={mode} />
+      <CodeEditor
+        defaultValue={value}
+        onChange={onChange}
+        additionalOptions={{ showGutter: false, highlightActiveLine: false }}
+        className='w-full h-full'
+        mode={mode}
+      />
       <label
         for='floating_outlined'
         class='flex text-base-content peer-hover:text-[hsl(var(--a))] peer-hover:scale-110 peer-focus:scale-110 peer-focus:text-[hsl(var(--a))] duration-300 w-fit opacity-100 peer-placeholder-shown:hidden'

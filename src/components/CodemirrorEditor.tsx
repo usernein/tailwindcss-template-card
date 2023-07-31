@@ -1,14 +1,14 @@
 export function CodemirrorEditor ({
-  value,
+  defaultValue,
   onChange
 }: {
-  value: string
-  onChange: (value: string) => void
+  defaultValue: string
+  onChange: (defaultValue: string) => void
 }) {
   const haCodeEditor = document.createElement(
     'ha-code-editor'
-  ) as HTMLElement & { value: string }
-  haCodeEditor.value = value
+  ) as HTMLElement & { defaultValue: string }
+  haCodeEditor.defaultValue = defaultValue
   haCodeEditor.addEventListener('value-changed', e => {
     const value = (e.target as HTMLInputElement).value
     onChange(value)

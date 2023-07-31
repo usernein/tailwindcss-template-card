@@ -9,20 +9,31 @@ import 'ace-builds/src-noconflict/ext-language_tools'
 import Ace, { IAceOptions } from 'react-ace'
 
 import './index.css'
+import { useEffect } from 'preact/hooks'
 
 export const AceEditor = ({
-  value,
+  defaultValue,
   onChange,
   additionalOptions,
   mode = 'html'
 }: {
-  value: string
-  onChange: (value: string) => void
+  defaultValue: string
+  onChange: (defaultValue: string) => void
   additionalOptions?: IAceOptions
   mode?: string
 }) => {
+  useEffect(() => {
+    console.log('ace editor mounted')
+    return () => {
+      console.log('ace editor unmounted')
+    }
+  }, [])
+
+  useEffect(() => {
+    console.log('ace editor default value changed', { defaultValue })
+  }, [defaultValue])
   return (
-    // @ts-expect-error
+    // @ts-expect-error AceEditor is not typed correctly
     <Ace
       mode={mode}
       theme='github_dark'
@@ -38,7 +49,7 @@ export const AceEditor = ({
         enableSnippets: true,
         ...additionalOptions
       }}
-      value={value}
+      defaultValue={defaultValue}
       onChange={onChange}
     />
   )

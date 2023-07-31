@@ -1,14 +1,8 @@
-import { useContext } from 'preact/compat'
-import { ConfigContext } from '@store/ConfigContext'
-import { CodeEditor } from '@components/CodeEditor'
+import { ContentEditor } from '@components/ContentEditor'
 import { SettingsBindings } from '@pages/SettingsBindings'
 import { SettingsActions } from './SettingsActions'
-import { useConfigMemo } from '@store/useConfigMemo'
 
 export const SettingsCardContent = () => {
-  const { updateConfig } = useContext(ConfigContext)
-  const { content } = useConfigMemo('content')
-
   return (
     <div className='w-full flex flex-col gap-3'>
       <div className='collapse collapse-open bg-base-200'>
@@ -16,10 +10,7 @@ export const SettingsCardContent = () => {
           HTML Content
         </label>
 
-        <CodeEditor
-          value={content}
-          onChange={e => updateConfig({ content: e })}
-        />
+        <ContentEditor />
       </div>
       <div className='min-w-full flex flex-col gap-3'>
         <SettingsBindings />

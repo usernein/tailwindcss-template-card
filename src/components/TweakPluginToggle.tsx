@@ -20,10 +20,11 @@ export function TweakPluginToggle ({
       onChange={checked => {
         updateConfig({
           plugins: {
+            ...config.plugins,
             [plugin]: {
               ...config.plugins[plugin],
               enabled: checked
-            }
+            } as ConfigState['plugins'][typeof plugin]
           }
         })
       }}

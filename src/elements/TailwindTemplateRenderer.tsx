@@ -8,8 +8,9 @@ import 'construct-style-sheets-polyfill'
 import axios from 'axios'
 import { fulfillWithDefaults } from '@store/ConfigReducer'
 
-import generatedCss from "@/src/index.css?inline"
+import generatedCss from '@/src/index.css?inline'
 import { ConfigState } from '@types'
+import { CardEvents, dispatchCardEvent } from '@utils/events'
 
 export abstract class TailwindTemplateRenderer extends HTMLElement {
   _hass: HomeAssistant | undefined
@@ -19,6 +20,9 @@ export abstract class TailwindTemplateRenderer extends HTMLElement {
   shadow: ShadowRoot
   _force_daisyui: boolean = false
   _ignore_broken_config = false
+  _rerender_after_set_config = true
+  _rerender_after_set_hass = true
+  _dispatch_config_setup_event = false
 
   constructor () {
     super()
@@ -33,18 +37,15 @@ export abstract class TailwindTemplateRenderer extends HTMLElement {
     this._oldConfig = this._config
     this._config = fulfillWithDefaults(config)
 
-    const event = new CustomEvent('tailwindcss-template-card-config-received', {
-      bubbles: true,
-      composed: true,
-      detail: { config }
-    })
-    window.dispatchEvent(event)
+    dispatchCardEvent(CardEvents.CONFIG_RECEIVED, { config })
+    if (this._dispatch_config_setup_event && !Object.keys(this._oldConfig).length)
+      dispatchCardEvent(CardEvents.CONFIG_SETUP, { config })
 
     if (pluginsConfigHasChanged || inSetup) {
       this.injectStylesheets(this._config)
     }
 
-    this._render(true)
+    if (!this._oldConfig || this._rerender_after_set_config) this._render(true)
   }
 
   async injectStylesheets ({ plugins }: ConfigState) {
@@ -108,7 +109,7 @@ export abstract class TailwindTemplateRenderer extends HTMLElement {
 
     window.hass = hass
 
-    this._render()
+    if (!this._oldHass || this._rerender_after_set_hass) this._render()
   }
 
   abstract _render(forceRender?: boolean): void

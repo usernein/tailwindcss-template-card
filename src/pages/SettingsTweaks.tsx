@@ -41,6 +41,7 @@ export const SettingsTweaks = ({
             onChange={(e: Event) =>
               updateConfig({
                 plugins: {
+                  ...config.plugins,
                   daisyui: {
                     ...config.plugins.daisyui,
                     theme: (e.target as HTMLSelectElement).value

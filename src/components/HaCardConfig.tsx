@@ -1,15 +1,9 @@
-import {
-  PropsWithChildren,
-  StateUpdater,
-  useContext,
-  useMemo,
-  useState
-} from 'preact/compat'
-import { ConfigContext } from '@store/ConfigContext'
+import { PropsWithChildren, StateUpdater, useState } from 'preact/compat'
 import clsx from 'clsx'
 import { SettingsTweaks } from '@pages/SettingsTweaks'
 import { SettingsCardContent } from '@pages/SettingsCardContent'
 import { SettingsPlugins } from '@pages/SettingsPlugins'
+import { WithDaisyUitheme } from './WithDaisyUitheme'
 // import { SettingsAbout } from '@pages/SettingsAbout'
 
 type ActiveTabState = {
@@ -41,23 +35,13 @@ const ConfigTab = ({
 }
 
 export function HaCardConfig () {
-  const { config } = useContext(ConfigContext)
-  const daisyUiTheme = useMemo(
-    () => config.plugins.daisyui.theme ?? 'inherit',
-    [config.plugins.daisyui.theme]
-  )
-  const attributes =
-    ['inherit', 'auto'].includes(daisyUiTheme) ? {} : { 'data-theme': daisyUiTheme }
   const activeState = useState({
     index: 0,
     inHiddenMode: false
   } as ActiveTabState)
 
   return (
-    <div
-      {...attributes}
-      className='w-full flex flex-col justify-center items-center rounded-xl bg-base-300 p-4'
-    >
+    <WithDaisyUitheme className='w-full flex flex-col justify-center items-center rounded-xl bg-base-300 p-4'>
       <div className='form-control w-full gap-3 justify-evenly'>
         <div className='tabs flex justify-center w-full'>
           <ConfigTab activeState={activeState} tabKey={0}>
@@ -81,6 +65,6 @@ export function HaCardConfig () {
         {activeState[0].index == 2 && <SettingsPlugins />}
         {/* {activeState[0].index == 3 && <SettingsAbout />} */}
       </div>
-    </div>
+    </WithDaisyUitheme>
   )
 }

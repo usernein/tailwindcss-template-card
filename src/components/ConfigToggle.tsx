@@ -1,9 +1,10 @@
+import { PropsWithChildren } from "preact/compat"
+
 export function ConfigToggle ({
   children,
   checked,
   onChange
-}: {
-  children: any
+}: PropsWithChildren & {
   checked: boolean
   onChange: (checked: boolean) => void
 }) {

@@ -1,3 +1,5 @@
+import { PropsWithChildren } from 'preact/compat'
+
 export function ConfigInput ({
   disabled = false,
   value,
@@ -5,12 +7,11 @@ export function ConfigInput ({
   onChange,
   children,
   debounceChangePeriod = 500
-}: {
+}: PropsWithChildren & {
   disabled?: boolean
   value: string
   placeholder: string
   onChange: (value: string) => void
-  children: any
   debounceChangePeriod?: number
 }) {
   let timeoutPointer: NodeJS.Timeout
