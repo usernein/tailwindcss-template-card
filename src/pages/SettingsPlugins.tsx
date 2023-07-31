@@ -52,7 +52,6 @@ export const SettingsPlugins = () => {
               }
               className='select w-full text-base-content'
             >
-              <option selected>inherit</option>
               {Object.values(DAISYUI_THEMES).map(({ theme, scheme }) => (
                 <option key={theme} value={`${scheme} - ${theme}`}>
                   {scheme} - {theme}
