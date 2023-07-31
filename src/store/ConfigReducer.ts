@@ -58,8 +58,11 @@ export const fulfillWithDefaults = (config: Partial<ConfigState>) => {
 
 export const initialConfigState: ConfigState = {
   ...defaultConfigState,
-  content: `<div class="text-red-600">Default content</div>`,
-  entities: ['sun.sun']
+  content: `<div class="flex flex-row gap-2 justify-center">
+  {% for color in ["slate", "red", "purple", "cyan", "blue", "green", "yellow"] %}
+    <div class="w-12 h-12 bg-{{color}}-300 rounded-lg cursor-pointer hover:translate-y-2 transition-all animate-bounce hover:animate-spin"></div>
+  {% endfor %}
+</div>`
 }
 
 export const useConfigReducer = () => {
@@ -78,7 +81,6 @@ export const useConfigReducer = () => {
       payload: config
     })
   }
-
 
   registerCardEventHandler(CardEvents.CONFIG_RECEIVED, (e: Event) => {
     const config = (e as CustomEvent).detail.config as ConfigState
