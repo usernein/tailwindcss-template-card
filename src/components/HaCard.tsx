@@ -7,10 +7,11 @@ export function HaCard ({
   htmlContent: string
   config: ConfigState
 }) {
-  const theme = config.plugins.daisyui.theme ?? 'inherit'
-  const attributes = ['inherit', 'auto'].includes(theme)
+  const theme = config.plugins.daisyui.theme ?? 'inherit - inherit'
+  const [scheme, themeName] = theme.split(' - ')
+  const attributes = ['inherit', 'auto', 'inherit - inherit'].includes(theme)
     ? {}
-    : { 'data-theme': theme }
+    : { 'data-theme': themeName }
   const unsetBackgroundStyles = { background: 'unset', color: 'unset' }
 
   return (
@@ -18,6 +19,7 @@ export function HaCard ({
       {/* @ts-expect-error tag <ha-card> is not native */}
       <ha-card>
         <div
+          className={scheme}
           style={
             config.plugins.daisyui.overrideCardBackground
               ? {}
