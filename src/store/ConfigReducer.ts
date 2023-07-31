@@ -59,8 +59,8 @@ export const fulfillWithDefaults = (config: Partial<ConfigState>) => {
 export const initialConfigState: ConfigState = {
   ...defaultConfigState,
   content: `<div class="flex flex-row gap-2 justify-center">
-  {% for color in ["slate", "red", "purple", "cyan", "blue", "green", "yellow"] %}
-    <div class="w-12 h-12 bg-{{color}}-300 rounded-lg cursor-pointer hover:translate-y-2 transition-all animate-bounce hover:animate-spin"></div>
+  {% for color in ["primary", "secondary", "accent", "info", "warning", "error", "info"] %}
+    <div class="w-12 h-12 bg-{{color}} rounded-lg cursor-pointer hover:translate-y-2 transition-all animate-bounce hover:animate-spin"></div>
   {% endfor %}
 </div>`
 }
