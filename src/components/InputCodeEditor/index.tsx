@@ -40,13 +40,13 @@ export function InputCodeEditor ({
       />
       <label
         for='floating_outlined'
-        class='flex text-base-content peer-hover:text-[hsl(var(--a))] peer-hover:scale-110 peer-focus:scale-110 peer-focus:text-[hsl(var(--a))] duration-300 w-fit opacity-100 peer-placeholder-shown:hidden'
+        class='select-none flex text-base-content peer-hover:text-[hsl(var(--a))] peer-hover:scale-110 peer-focus:scale-110 peer-focus:text-[hsl(var(--a))] duration-300 w-fit opacity-100 peer-placeholder-shown:hidden'
       >
         <span className='label-text-alt text-inherit'>{label}</span>
       </label>
       <label
         for='floating_outlined'
-        class='peer-hover:scale-110 peer-focus:scale-110 duration-300 w-fit opacity-100 text-error hidden peer-placeholder-shown:block'
+        class='select-none peer-hover:scale-110 peer-focus:scale-110 duration-300 w-fit opacity-100 text-error hidden peer-placeholder-shown:block'
       >
         <span className='label-text-alt text-inherit'>Required</span>
       </label>
