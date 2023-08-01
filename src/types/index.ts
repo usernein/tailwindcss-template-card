@@ -20,8 +20,8 @@ export type Binding = {
   type: string
 }
 
-export type BindAction = {
-  call: boolean
+export type Action = {
+  call: string
   selector: string
   type: string
 }
@@ -59,7 +59,7 @@ export type ConfigState = {
   }
   code_editor: CodeEditorOptionsEnum
   bindings: Binding[]
-  actions: BindAction[]
+  actions: Action[]
   debounceChangePeriod: number
 }
 
