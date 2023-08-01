@@ -33,6 +33,11 @@ export const SettingsActions = () => {
                     actions: actions.map((v, i) => (i === index ? value : v))
                   })
                 }}
+                onDelete={() => {
+                  updateConfig({
+                    actions: actions.filter((_, i) => i !== index)
+                  })
+                }}
               />
             ))}
           </div>

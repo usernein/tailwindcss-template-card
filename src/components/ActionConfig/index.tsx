@@ -1,17 +1,20 @@
 import clsx from 'clsx'
 import { Action } from '@types'
 import { InputCodeEditor } from '@components/InputCodeEditor'
+import { BiSolidTrash } from 'react-icons/bi'
 
 export function ActionConfig ({
   action,
   isMinimized = false,
   maximize,
-  onChange
+  onChange,
+  onDelete
 }: {
   action: Action
   isMinimized?: boolean
   maximize?: () => void
   onChange: (value: Action) => void
+  onDelete: () => void
 }) {
   const openHandler: EventListener = e => {
     e.preventDefault()
@@ -23,15 +26,27 @@ export function ActionConfig ({
   return (
     <div
       class={clsx(
-        'flex flex-col gap-2 justify-start bg-base-100 p-2 rounded-[var(--rounded-box)] origin-top transition-[height] duration-300 w-80 cursor-pointer overflow-hidden',
-        isMinimized ? 'row-span-1 opacity-75' : 'row-span-2 ring-base-content ring-1'
+        'relative group flex flex-col gap-2 justify-start bg-base-100 p-2 rounded-[var(--rounded-box)] origin-top transition-[height] duration-300 w-80 overflow-visible',
+        isMinimized
+          ? 'row-span-1 opacity-75 cursor-pointer'
+          : 'row-span-2 ring-base-content ring-1'
       )}
       {...(isMinimized
         ? {
-            onClickCapture: openHandler
+            onClick: openHandler
           }
         : {})}
     >
+      <div
+        className='z-10 hover:text-error hover:scale-110 active:scale-90 transition-all text-base-content/30 text-sm absolute top-2 right-4 hidden group-hover:flex'
+        onClick={(e) => {
+          e.stopImmediatePropagation()
+          onDelete()
+        }}
+      >
+        <BiSolidTrash />
+      </div>
+
       <div
         class={clsx(
           'w-full h-full self-start flex flex-col',
@@ -42,9 +57,7 @@ export function ActionConfig ({
           <InputCodeEditor
             label='Selector'
             value={action.selector}
-            onChange={value =>
-              onChange({ ...action, selector: value })
-            }
+            onChange={value => onChange({ ...action, selector: value })}
             mode='css'
           />
           <InputCodeEditor

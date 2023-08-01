@@ -33,6 +33,11 @@ export const SettingsBindings = () => {
                     bindings: bindings.map((v, i) => (i === index ? value : v))
                   })
                 }}
+                onDelete={() => {
+                  updateConfig({
+                    bindings: bindings.filter((_, i) => i !== index)
+                  })
+                }}
               />
             ))}
           </div>
