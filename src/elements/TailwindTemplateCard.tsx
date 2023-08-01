@@ -152,8 +152,13 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
   _renderHtmlContent () {
     this.ensureIsReadyForRender()
 
+    this._deRender()
     render(
-      <HaCard htmlContent={this._htmlContent} config={this._config} onEvent={(e) => this.handleActions(e)}/>,
+      <HaCard
+        htmlContent={this._htmlContent}
+        config={this._config}
+        onEvent={e => this.handleActions(e)}
+      />,
       this.shadow
     )
 
