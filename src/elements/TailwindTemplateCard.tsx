@@ -176,7 +176,7 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
   }
 
   applyBindings () {
-    if (!this._config.bindings) return
+    if (!this._config?.bindings) return
 
     this._config.bindings.forEach((binding: Binding) => {
       if (!binding.selector || !binding.bind || !binding.type) return
@@ -213,7 +213,7 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
   }
 
   handleActions (e: Event) {
-    if (!this._config || !this._config.actions || !e.target) return
+    if (!this._config?.actions || !e.target) return
 
     const hass = this._hass
     const config = this._config
