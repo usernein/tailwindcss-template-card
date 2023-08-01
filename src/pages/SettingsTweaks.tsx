@@ -1,6 +1,7 @@
 import { TweakToggle } from '@components/TweakToggle'
 import { CodeEditorOptions } from '@components/CodeEditorOptions'
 import { TweakRangeInput } from '@components/TweakRangeInput'
+import { CardEntityConfig } from '@components/CardEntityConfig'
 
 export const SettingsTweaks = ({
   inHiddenMode
@@ -14,6 +15,7 @@ export const SettingsTweaks = ({
           General
         </div>
         <div className='collapse-content flex gap-1 flex-col'>
+          <CardEntityConfig />
           <TweakToggle label='Ignore line breaks' tweak='ignore_line_breaks' />
           <TweakToggle label='Always update' tweak='always_update' />
           <TweakToggle label='Parse Jinja templates' tweak='parse_jinja' />
