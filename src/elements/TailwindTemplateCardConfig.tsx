@@ -28,7 +28,6 @@ export class TailwindTemplateCardConfig extends TailwindTemplateRenderer {
       this.configChanged(fulfillWithDefaults(config))
     })
 
-    console.log('card element created')
     this._render()
   }
 

@@ -9,7 +9,7 @@ import {
   dispatchCardEvent,
   registerCardEventHandler
 } from '@utils/events'
-import { useEffect, useReducer } from 'preact/hooks'
+import { useReducer } from 'preact/hooks'
 
 export const ConfigReducer = (
   state: ConfigState,
@@ -66,9 +66,6 @@ export const initialConfigState: ConfigState = {
 }
 
 export const useConfigReducer = () => {
-  useEffect(() => {
-    console.log('useConfigReducer updated')
-  })
   const [state, dispatch] = useReducer(ConfigReducer, initialConfigState)
 
   const updateConfig = (

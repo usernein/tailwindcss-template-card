@@ -15,7 +15,6 @@ export function WithDaisyUitheme ({
 
   // split string by " - "
   const [scheme, theme] = daisyUiTheme.split(' - ')
-  console.log({ scheme, theme })
 
   const attributes = ['inherit', 'auto'].includes(daisyUiTheme)
     ? {}

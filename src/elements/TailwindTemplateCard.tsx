@@ -81,10 +81,6 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
   }
 
   renderIfNeeded (forceUpdate?: boolean) {
-    console.log({
-      doesBindingsDiffer:
-        this._oldConfig['bindings'] != this._config['bindings']
-    })
     if (forceUpdate || this.needsRender()) {
       this.processAndRender()
     }
@@ -122,7 +118,6 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
       return
 
     let content = this._config.content
-    console.log('content', content)
 
     if (
       undefined !== this._config.ignore_line_breaks &&
@@ -156,7 +151,6 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
 
   _renderHtmlContent () {
     this.ensureIsReadyForRender()
-    console.log('is ready for render', this._htmlContent)
 
     render(
       <HaCard htmlContent={this._htmlContent} config={this._config} onEvent={(e) => this.handleActions(e)}/>,
@@ -182,7 +176,6 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
   }
 
   applyBindings () {
-    console.log('bindings', this._config.bindings)
     if (!this._config.bindings) return
 
     this._config.bindings.forEach((binding: Binding) => {
@@ -220,12 +213,7 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
   }
 
   handleActions (e: Event) {
-    console.log('handleactions executed!', !this._config || !e.target, [
-      this._hass,
-      e.target
-    ])
     if (!this._config || !this._config.actions || !e.target) return
-    console.log('actions', this._config.actions)
 
     const hass = this._hass
     const config = this._config
@@ -247,15 +235,10 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
     }
 
     this._config.actions.forEach(({ call, selector, type }: Action) => {
-      console.log('action', { call, selector, type })
       if (!selector || !call || !type) return
 
       const target = e.target as HTMLElement
 
-      console.log(
-        { type, selector },
-        type === e.type && target.matches(selector)
-      )
       if (type === e.type && target.matches(selector)) {
         const executeCall = new Function('hass', 'config', 'entity', call)
         executeCall.call(e.target, hass, config, entity)
