@@ -2,10 +2,12 @@ import { ConfigState } from '@types'
 
 export function HaCard ({
   htmlContent,
-  config
+  config,
+  onEvent
 }: {
   htmlContent: string
   config: ConfigState
+  onEvent: (e: Event) => void
 }) {
   const theme = config.plugins.daisyui.theme ?? 'inherit - inherit'
   const [scheme, themeName] = theme.split(' - ')
@@ -27,6 +29,10 @@ export function HaCard ({
           }
           {...attributes}
           dangerouslySetInnerHTML={{ __html: htmlContent }}
+
+          onClickCapture={onEvent}
+          onDblClickCapture={onEvent}
+          onChangeCapture={onEvent}
         />
         {/* @ts-expect-error <ha-card> is not native */}
       </ha-card>

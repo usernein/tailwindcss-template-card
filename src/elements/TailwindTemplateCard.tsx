@@ -5,7 +5,8 @@ import { HaCard } from '@components/HaCard'
 import 'construct-style-sheets-polyfill'
 import { TailwindTemplateRenderer } from './TailwindTemplateRenderer'
 import { initialConfigState } from '@store/ConfigReducer'
-import { Binding } from '@types'
+import { Action, Binding } from '@types'
+import { HomeAssistant } from 'custom-card-helpers'
 
 console.info(
   `%c  TailwindCSS Template Card  \n%c  Version ${CARD_VERSION}  \n%c  Star it at http://github.com/usernein/tailwindcss-template-card!`,
@@ -154,12 +155,11 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
   }
 
   _renderHtmlContent () {
-    console.log('rendering html content', this._htmlContent)
     this.ensureIsReadyForRender()
     console.log('is ready for render', this._htmlContent)
 
     render(
-      <HaCard htmlContent={this._htmlContent} config={this._config} />,
+      <HaCard htmlContent={this._htmlContent} config={this._config} onEvent={(e) => this.handleActions(e)}/>,
       this.shadow
     )
 
@@ -216,6 +216,50 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
             break
         }
       })
+    })
+  }
+
+  handleActions (e: Event) {
+    console.log('handleactions executed!', !this._config || !e.target, [
+      this._hass,
+      e.target
+    ])
+    if (!this._config || !this._config.actions || !e.target) return
+    console.log('actions', this._config.actions)
+
+    const hass = this._hass
+    const config = this._config
+    const entity_id = config.entity
+
+    if (!hass) return
+
+    const entity = { ...hass.states[entity_id] } as {
+      [key: string]: CallableFunction
+    } & HomeAssistant['states'][string]
+
+    if (entity_id) {
+      const [domain] = entity_id.split('.')
+      const services = hass.services[domain]
+      for (const service in services) {
+        entity[service] = (data: object) =>
+          hass.callService(domain, service, { entity_id, ...data })
+      }
+    }
+
+    this._config.actions.forEach(({ call, selector, type }: Action) => {
+      console.log('action', { call, selector, type })
+      if (!selector || !call || !type) return
+
+      const target = e.target as HTMLElement
+
+      console.log(
+        { type, selector },
+        type === e.type && target.matches(selector)
+      )
+      if (type === e.type && target.matches(selector)) {
+        const executeCall = new Function('hass', 'config', 'entity', call)
+        executeCall.call(e.target, hass, config, entity)
+      }
     })
   }
 
