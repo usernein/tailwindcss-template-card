@@ -22,7 +22,6 @@ export const AceEditor = ({
   mode?: string
 }) => {
   return (
-    // @ts-expect-error AceEditor is not typed correctly
     <Ace
       mode={mode}
       theme='github_dark'
