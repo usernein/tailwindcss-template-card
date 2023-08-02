@@ -33,6 +33,7 @@ export function HaCard ({
           onClickCapture={onEvent}
           onDblClickCapture={onEvent}
           onChangeCapture={onEvent}
+          onInputCapture={onEvent}
         />
         {/* @ts-expect-error <ha-card> is not native */}
       </ha-card>
