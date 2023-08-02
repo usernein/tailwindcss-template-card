@@ -60,9 +60,9 @@ export function BindingConfig ({
             onChange={value => onChange({ ...binding, selector: value })}
             mode='css'
           />
-          <div class={clsx('relative p-1 w-full flex flex-col-reverse')}>
+          <div class={clsx('relative py-1 w-full flex flex-col-reverse')}>
             <select
-              className='select w-full text-base-content select-bordered'
+              className='select h-full min-h-0 w-full text-base-content select-bordered'
               defaultValue={binding.type}
               onChange={e =>
                 onChange({
