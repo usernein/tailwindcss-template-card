@@ -39,7 +39,7 @@ export function ActionConfig ({
     >
       <div
         className='z-10 hover:text-error hover:scale-110 active:scale-90 transition-all text-base-content/30 text-sm absolute top-2 right-4 hidden group-hover:flex'
-        onClick={(e) => {
+        onClick={e => {
           e.stopImmediatePropagation()
           onDelete()
         }}
@@ -60,11 +60,29 @@ export function ActionConfig ({
             onChange={value => onChange({ ...action, selector: value })}
             mode='css'
           />
-          <InputCodeEditor
-            label='Type'
-            value={action.type}
-            onChange={value => onChange({ ...action, type: value })}
-          />
+          <div class={clsx('h-full py-1 w-full flex flex-col-reverse')}>
+            <select
+              className='select min-h-0 h-full w-full text-base-content select-bordered'
+              defaultValue={action.type}
+              onChange={e =>
+                onChange({
+                  ...action,
+                  type: (e.target as HTMLSelectElement).value
+                })
+              }
+            >
+              <option>click</option>
+              <option>dblclick</option>
+              <option>change</option>
+              <option>input</option>
+            </select>
+            <label
+              for='floating_outlined'
+              class='select-none flex text-base-content'
+            >
+              <span className='label-text-alt text-inherit'>Type</span>
+            </label>
+          </div>
         </div>
         <div
           className={clsx(

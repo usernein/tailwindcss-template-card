@@ -39,7 +39,7 @@ export function BindingConfig ({
     >
       <div
         className='z-10 hover:text-error hover:scale-110 active:scale-90 transition-all text-base-content/30 text-sm absolute top-2 right-4 hidden group-hover:flex'
-        onClick={(e) => {
+        onClick={e => {
           e.stopImmediatePropagation()
           onDelete()
         }}
@@ -60,11 +60,30 @@ export function BindingConfig ({
             onChange={value => onChange({ ...binding, selector: value })}
             mode='css'
           />
-          <InputCodeEditor
-            label='Type'
-            value={binding.type}
-            onChange={value => onChange({ ...binding, type: value })}
-          />
+          <div class={clsx('relative p-1 w-full flex flex-col-reverse')}>
+            <select
+              className='select w-full text-base-content select-bordered'
+              defaultValue={binding.type}
+              onChange={e =>
+                onChange({
+                  ...binding,
+                  type: (e.target as HTMLSelectElement).value
+                })
+              }
+            >
+              <option>text</option>
+              <option>html</option>
+              <option>class</option>
+              <option>value</option>
+              <option>checked</option>
+            </select>
+            <label
+              for='floating_outlined'
+              class='select-none flex text-base-content'
+            >
+              <span className='label-text-alt text-inherit'>Type</span>
+            </label>
+          </div>
         </div>
         <div
           className={clsx(
