@@ -205,6 +205,9 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
           case 'checked':
             targetAsInput.checked = Boolean(result)
             break
+          case 'value':
+            targetAsInput.value = result
+            break
           default:
             if (typeof result === 'undefined' || '' === `${result}`) {
               target.removeAttribute(binding.type)
