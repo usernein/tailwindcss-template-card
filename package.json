@@ -23,11 +23,13 @@
     "custom-card-helpers": "^1.9.0",
     "daisyui": "^3.1.1",
     "html-react-parser": "^4.2.0",
+    "lodash": "^4.17.21",
     "preact": "^10.13.1",
     "react-ace": "^10.1.0"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.5.0",
+    "@types/lodash": "^4.14.200",
     "@types/node": "^20.3.2",
     "@types/react": "17.0.30",
     "@typescript-eslint/eslint-plugin": "^6.2.0",
