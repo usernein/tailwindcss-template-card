@@ -286,7 +286,7 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
         "attr",
         bind,
       );
-      const nextState = getState.call(
+      return getState.call(
         element,
         this._hass,
         this._config,
@@ -294,7 +294,6 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
         entity ? entity.state : undefined,
         entity ? entity.attributes : undefined,
       );
-      return nextState;
     } catch (e) {
       console.log("BINDING --> FAILED", bind);
     }
