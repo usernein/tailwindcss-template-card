@@ -159,6 +159,9 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
       {
         type: "render_template",
         template: content,
+        variables: {
+          user: this._hass.user!.name,
+        },
       },
     );
   }
