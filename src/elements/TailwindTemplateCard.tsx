@@ -19,6 +19,8 @@ console.info(
 export class TailwindTemplateCard extends TailwindTemplateRenderer {
   _entitiesToWatch: string[] = [];
   _htmlContent: string = "";
+  // Unsubscribe handle for the active render_template subscription.
+  _unsub?: Promise<() => void>;
 
   constructor() {
     super();
@@ -151,7 +153,9 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
       return;
     }
 
-    this._hass.connection.subscribeMessage(
+    // Free the previous subscription before re-subscribing.
+    this._unsubscribeTemplate();
+    this._unsub = this._hass.connection.subscribeMessage(
       (msg: { result: string }) => {
         this._htmlContent = msg.result;
         this._renderHtmlContent();
@@ -161,6 +165,17 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
         template: content,
       },
     );
+  }
+
+  _unsubscribeTemplate() {
+    if (this._unsub) {
+      this._unsub.then((unsub) => unsub()).catch(() => {});
+      this._unsub = undefined;
+    }
+  }
+
+  disconnectedCallback() {
+    this._unsubscribeTemplate();
   }
 
   _render(forceRender?: boolean) {
