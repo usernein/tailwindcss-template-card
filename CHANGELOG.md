@@ -9,6 +9,34 @@ this fork's; upstream's generated history is kept at the bottom for reference.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **A card shown after being hidden no longer freezes.** Home Assistant passes
+  state to cards it hasn't attached — a conditional card keeps its child
+  detached while hidden. The card opened its template subscription anyway,
+  closed it again for being detached, but still counted it as open, so once
+  shown it never subscribed: it stayed blank, or stuck on the last value it
+  had before it was hidden. The subscription is now an explicit
+  `closed → opening → open` state, opened only while the card is attached.
+- **The editor can no longer show, or save, another card's content.** Every
+  card announced its config on `document` and every open editor took it in,
+  so in a stack of these cards the editor for one card could pick up a
+  sibling's content and write it back on the next edit. Each editor now has
+  its own channel, and cards announce nothing.
+- **A hold no longer also fires the click action.** The handler meant to
+  swallow the click after a hold ran after the click action rather than
+  before it, so holding a tile with both `hold` and `click` actions ran both.
+- A hold the browser cancels (a scroll, its own long-press menu) no longer
+  swallows the next keyboard-activated click, and a right or middle button
+  press no longer starts a hold.
+
+### Docs
+
+- Installation covers the Marketplace, which replaces HACS from Home
+  Assistant 2026.11.
+
 ## [4.4.0] - 2026-10-04
 
 ### Changed

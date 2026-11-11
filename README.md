@@ -23,13 +23,14 @@ This fork modernises the internals and keeps it maintained. It also registers th
 
 ## Installation
 
-### Via HACS (recommended)
+### Via the Marketplace or HACS (recommended)
 
-1. Open **HACS** in Home Assistant.
-2. Click the three-dot menu (top right) → **Custom repositories**.
-3. Add `https://github.com/chukwudibarrah/tailwind-template-card` with category **Dashboard**.
-4. Find **Tailwind Template Card** in the list and click **Download**.
-5. Reload your browser when Home Assistant prompts you.
+From Home Assistant 2026.11, HACS is built in as the **Marketplace**, and a separate HACS can no longer be installed. On earlier versions, use HACS.
+
+1. Open the **Marketplace** (or **HACS** before 2026.11).
+2. Add `https://github.com/chukwudibarrah/tailwind-template-card` as a **custom repository** with category **Dashboard**. The Marketplace asks you to sign in to GitHub the first time.
+3. Find **Tailwind Template Card** in the list and click **Download**.
+4. Reload your browser when Home Assistant prompts you.
 
 ### Manually
 

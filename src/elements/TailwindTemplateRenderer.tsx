@@ -3,7 +3,6 @@ import { fulfillWithDefaults, validateConfig } from '@store/configDefaults'
 
 import generatedCss from '@/src/index.css?inline'
 import { ConfigState } from '@types'
-import { CardEvents, dispatchCardEvent } from '@utils/events'
 import { TailwindEngine, extractCandidates } from '@/src/styles/TailwindEngine'
 
 /**
@@ -24,9 +23,7 @@ export abstract class TailwindTemplateRenderer extends HTMLElement {
   _hass: HomeAssistant | undefined
   _oldHass: HomeAssistant | undefined
   _config: ConfigState = {} as ConfigState
-  _oldConfig: ConfigState = {} as ConfigState
   shadow: ShadowRoot
-  _rerender_after_set_config = true
 
   constructor () {
     super()
@@ -37,14 +34,16 @@ export abstract class TailwindTemplateRenderer extends HTMLElement {
 
   setConfig (config: Partial<ConfigState>) {
     validateConfig(config)
-
-    this._oldConfig = this._config
     this._config = fulfillWithDefaults(config)
-
-    dispatchCardEvent(CardEvents.CONFIG_RECEIVED, { config })
-
-    if (this._rerender_after_set_config) this._render(true)
+    this.configReceived()
   }
+
+  /**
+   * Called with each config Home Assistant sets: the card repaints, the editor
+   * hands it to the tree it mounted. Nothing is broadcast — a config is only
+   * ever this element's business.
+   */
+  abstract configReceived (): void
 
   /** Entry stylesheet implied by the current plugin configuration. */
   get entryCss (): string {
