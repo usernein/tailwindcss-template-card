@@ -9,7 +9,7 @@ this fork's; upstream's generated history is kept at the bottom for reference.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [4.4.1] - 2026-11-12
 
 ### Fixed
 
@@ -307,6 +307,7 @@ configurations and community examples keep working.
 - Classes introduced by bindings (`type: class`, or markup injected via
   `type: html`) are compiled, via a second pass over the rendered DOM.
 
+[4.4.1]: https://github.com/chukwudibarrah/tailwind-template-card/releases/tag/v4.4.1
 [4.4.0]: https://github.com/chukwudibarrah/tailwind-template-card/releases/tag/v4.4.0
 [4.3.0]: https://github.com/chukwudibarrah/tailwind-template-card/releases/tag/v4.3.0
 [4.2.1]: https://github.com/chukwudibarrah/tailwind-template-card/releases/tag/v4.2.1
