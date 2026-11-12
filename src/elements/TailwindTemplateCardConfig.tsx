@@ -4,12 +4,7 @@ import { HomeAssistant } from 'custom-card-helpers'
 import { TailwindTemplateRenderer } from './TailwindTemplateRenderer'
 import { fulfillWithDefaults, withoutDefaults } from '@store/configDefaults'
 import { ConfigState } from '@types'
-import {
-  CardEvents,
-  dispatchCardEvent,
-  registerCardEventHandler,
-  unregisterCardEventHandler
-} from '@utils/events'
+import { ConfigChannel } from '@store/ConfigChannel'
 import { ConfigProvider } from '@store/ConfigProvider'
 import { HassContext } from '@store/HassContext'
 import { HaCardConfig } from '@components/HaCardConfig'
@@ -19,60 +14,50 @@ import React from 'preact/compat'
  *  every call, which defeats memoisation and forces a full remount. */
 const MemoizedCardConfig = React.memo(HaCardConfig)
 
+/**
+ * The card's visual editor.
+ *
+ * Mounted from construction until disconnect, and again on reconnect. Configs
+ * reach the mounted tree, and edits leave it, through this element's own
+ * `ConfigChannel` — never through anything shared with other elements.
+ */
 export class TailwindTemplateCardConfig extends TailwindTemplateRenderer {
   /** Whether the Preact tree is currently mounted into the shadow root. */
   private _mounted = false
 
-  private _onConfigChanged = (e: Event) => {
+  private readonly _channel = new ConfigChannel(config => {
     // A detached editor must not keep answering for the live one.
-    if (!this.isConnected) return
-    const detail = (e as CustomEvent).detail
-    const config = detail.config as Partial<ConfigState>
-    this.configChanged(fulfillWithDefaults(config))
-  }
+    if (this.isConnected) this.configChanged(fulfillWithDefaults(config))
+  })
 
   constructor () {
     super()
 
-    this._rerender_after_set_config = false
-
     // Mounted here, not in connectedCallback: Home Assistant may call
-    // setConfig before the element is attached, and the configuration is
-    // delivered through an event the mounted tree has to be listening for.
+    // setConfig before the element is attached.
     this._render()
     this._mounted = true
   }
 
-  /*
-   * Listeners are bound per connection rather than in the constructor. Home
-   * Assistant builds a fresh editor element each time a card's configuration is
-   * opened, and a constructor-registered listener on `document` outlives the
-   * element — every editor ever opened would keep responding.
-   */
+  /** The channel replays the current config to the remounted tree. */
   connectedCallback () {
-    registerCardEventHandler(CardEvents.CONFIG_CHANGED, this._onConfigChanged)
-
     if (!this._mounted) {
       this._render()
       this._mounted = true
-
-      // Re-seed the freshly mounted tree with the configuration we already hold.
-      if (this._config && Object.keys(this._config).length) {
-        dispatchCardEvent(CardEvents.CONFIG_RECEIVED, { config: this._config })
-      }
     }
   }
 
   /*
-   * Unmount on disconnect so the tree's effects — notably the CONFIG_RECEIVED
-   * subscription — actually run their cleanup. Removing the custom element does
-   * not by itself tell Preact to unmount, so each editor session used to leave
-   * its listener behind for the lifetime of the page.
+   * Unmount on disconnect so the tree's effects actually run their cleanup.
+   * Removing the custom element does not by itself tell Preact to unmount.
    */
   disconnectedCallback () {
-    unregisterCardEventHandler(CardEvents.CONFIG_CHANGED, this._onConfigChanged)
     render(null, this.shadow)
     this._mounted = false
+  }
+
+  configReceived () {
+    this._channel.receive(this._config)
   }
 
   /** Re-render so the entity picker and theme see the current `hass`. */
@@ -101,7 +86,7 @@ export class TailwindTemplateCardConfig extends TailwindTemplateRenderer {
   _render () {
     render(
       <HassContext.Provider value={this._hass}>
-        <ConfigProvider>
+        <ConfigProvider channel={this._channel}>
           <MemoizedCardConfig />
         </ConfigProvider>
       </HassContext.Provider>,

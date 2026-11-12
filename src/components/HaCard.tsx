@@ -64,6 +64,23 @@ const HOLD_DURATION_MS = 500
 const HOLD_MOVE_TOLERANCE_PX = 10
 
 /**
+ * Press-and-hold, synthesised from pointer events the way Home Assistant's
+ * own cards offer it:
+ *
+ *   idle ──pointerdown──▶ pressing ──500ms, fires `hold`──▶ held
+ *     ▲                     │ moved, released, cancelled      │
+ *     ├─────────────────────┘                                 │
+ *     └── its click (swallowed), cancel, key, new press ──────┘
+ *
+ * `held` exists only to swallow the click its own release produces, so a
+ * hold never also runs the element's click action.
+ */
+type HoldPhase =
+  | { name: 'idle' }
+  | { name: 'pressing'; timer: number; x: number; y: number }
+  | { name: 'held' }
+
+/**
  * The card's persistent shell: `ha-card` and the content container.
  *
  * The content itself is not rendered here. The card morphs it into
@@ -100,64 +117,54 @@ export function HaCard ({
     const container = contentRef.current
     if (!container) return
 
-    FORWARDED_EVENTS.forEach((type) =>
-      container.addEventListener(type, dispatch, true)
-    )
+    let hold: HoldPhase = { name: 'idle' }
 
-    // Synthesise `hold` from pointer events so cards can offer press-and-hold
-    // the way Home Assistant's own cards do. A completed hold suppresses the
-    // click that would otherwise follow it.
-    let timer: number | null = null
-    let origin: { x: number; y: number } | null = null
-    let held = false
-
-    const clearTimer = () => {
-      if (timer !== null) {
-        window.clearTimeout(timer)
-        timer = null
-      }
+    const reset = () => {
+      if (hold.name === 'pressing') window.clearTimeout(hold.timer)
+      hold = { name: 'idle' }
     }
 
     const onPointerDown = (e: PointerEvent) => {
-      const target = e.target as HTMLElement | null
-      if (!target) return
+      reset()
+      // A right or middle button isn't a press of the control.
+      if (e.button > 0) return
+      const target = e.target
+      if (!(target instanceof HTMLElement)) return
 
-      held = false
-      origin = { x: e.clientX, y: e.clientY }
-
-      clearTimer()
-      timer = window.setTimeout(() => {
-        timer = null
-        held = true
+      const timer = window.setTimeout(() => {
+        hold = { name: 'held' }
         target.dispatchEvent(
           new CustomEvent('hold', { bubbles: true, composed: true })
         )
       }, HOLD_DURATION_MS)
+      hold = { name: 'pressing', timer, x: e.clientX, y: e.clientY }
     }
 
     const onPointerMove = (e: PointerEvent) => {
-      if (timer === null || !origin) return
-      const travelled =
-        Math.abs(e.clientX - origin.x) + Math.abs(e.clientY - origin.y)
-      if (travelled > HOLD_MOVE_TOLERANCE_PX) clearTimer()
+      if (hold.name !== 'pressing') return
+      const travelled = Math.abs(e.clientX - hold.x) + Math.abs(e.clientY - hold.y)
+      if (travelled > HOLD_MOVE_TOLERANCE_PX) reset()
     }
 
+    // A completed hold waits for the click its release produces.
     const onPointerUp = () => {
-      clearTimer()
-      origin = null
+      if (hold.name === 'pressing') reset()
     }
 
-    const onClickCapture = (e: Event) => {
-      if (!held) return
-      // The press already fired a `hold`; don't also fire the click action.
-      held = false
-      e.stopPropagation()
+    const onClickCapture = (e: MouseEvent) => {
+      if (hold.name !== 'held') return
+      hold = { name: 'idle' }
+      // Only the click a pointer release produces belongs to the hold;
+      // keyboard and scripted clicks have `detail` 0.
+      if (e.detail === 0) return
+      e.stopImmediatePropagation()
       e.preventDefault()
     }
 
     // Custom controls opted in with `role="button"` or `tabindex` answer
     // Enter and Space the way a native button would.
     const onKeyDown = (e: KeyboardEvent) => {
+      reset()
       if (e.key !== 'Enter' && e.key !== ' ') return
       if (e.defaultPrevented || e.repeat) return
       const target = e.target
@@ -168,17 +175,24 @@ export function HaCard ({
       target.click()
     }
 
+    // First, so a held press can cancel its click before `dispatch` sees it:
+    // listeners on one element run in the order they were added.
+    container.addEventListener('click', onClickCapture, true)
+    FORWARDED_EVENTS.forEach((type) =>
+      container.addEventListener(type, dispatch, true)
+    )
     container.addEventListener('keydown', onKeyDown)
     container.addEventListener('hold', dispatch, true)
     container.addEventListener('pointerdown', onPointerDown, true)
     container.addEventListener('pointermove', onPointerMove, true)
     container.addEventListener('pointerup', onPointerUp, true)
-    container.addEventListener('pointercancel', onPointerUp, true)
-    // Registered before `dispatch` runs so a held press can cancel its click.
-    container.addEventListener('click', onClickCapture, true)
+    // The browser took the pointer over (a scroll, its own menu): no click
+    // follows, so there's nothing left to suppress.
+    container.addEventListener('pointercancel', reset, true)
 
     return () => {
-      clearTimer()
+      reset()
+      container.removeEventListener('click', onClickCapture, true)
       FORWARDED_EVENTS.forEach((type) =>
         container.removeEventListener(type, dispatch, true)
       )
@@ -187,8 +201,7 @@ export function HaCard ({
       container.removeEventListener('pointerdown', onPointerDown, true)
       container.removeEventListener('pointermove', onPointerMove, true)
       container.removeEventListener('pointerup', onPointerUp, true)
-      container.removeEventListener('pointercancel', onPointerUp, true)
-      container.removeEventListener('click', onClickCapture, true)
+      container.removeEventListener('pointercancel', reset, true)
     }
   }, [dispatch, contentRef])
 

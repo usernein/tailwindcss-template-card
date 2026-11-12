@@ -51,27 +51,34 @@ const safeClosest = (element: Element, selector: string) => {
   }
 };
 
+/**
+ * Lifecycle of the card's one `render_template` subscription.
+ *
+ *   closed ──openTemplate──▶ opening ──resolves──▶ open
+ *     ▲                         │ rejects             │
+ *     └────────closeTemplate────┴─────────────────────┘
+ *
+ * Only a connected card opens one: disconnecting closes it, and connecting
+ * opens it again. Results are accepted only from the subscription whose `id`
+ * is current, so a closed or replaced one can never paint over a newer one.
+ */
+export type TemplateSubscription =
+  | { status: "closed" }
+  | { status: "opening"; id: number; template: string }
+  | { status: "open"; id: number; template: string; unsubscribe: () => void };
+
 export class TailwindTemplateCard extends TailwindTemplateRenderer {
   _entitiesToWatch: string[] = [];
   _htmlContent: string = "";
   /** Last template error Home Assistant reported, shown in the card. */
   _templateError: string | null = null;
 
-  /** Unsubscribe handle for the active `render_template` subscription. */
-  _templateUnsub: (() => void) | null = null;
-  /**
-   * The template the current subscription was opened for, from the moment it
-   * starts opening — so an update arriving meanwhile doesn't open another.
-   */
-  _subscribedContent: string | null = null;
-  /**
-   * Incremented on every (re)subscribe so that results arriving from a
-   * superseded subscription are discarded instead of clobbering the DOM.
-   */
-  _subscriptionGeneration = 0;
+  /** The `render_template` subscription. See `TemplateSubscription`. */
+  _subscription: TemplateSubscription = { status: "closed" };
+  /** Source of `TemplateSubscription` ids. */
+  _lastSubscriptionId = 0;
   /** Entities HA reported the current template actually depends on. */
   _listenerEntities: string[] = [];
-  _isConnected = false;
 
   /** Incremented per paint, so a slow style compile can't paint stale HTML. */
   _paintGeneration = 0;
@@ -88,6 +95,10 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
     return document.createElement(CONFIG_TYPE);
   }
 
+  configReceived() {
+    this._render(true);
+  }
+
   /** Only the content: every other option is written once it's changed. */
   static getStubConfig() {
     return { content: STUB_CONTENT };
@@ -99,28 +110,44 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
   }
 
   connectedCallback() {
-    this._isConnected = true;
-    // Re-open the subscription that disconnectedCallback tore down.
+    // Open the subscription that disconnectedCallback closed, or that was
+    // never opened because the card was configured while detached.
     if (this._hass && this._config?.content !== undefined) {
       this._render(true);
     }
   }
 
   disconnectedCallback() {
-    this._isConnected = false;
-    this.unsubscribeTemplate();
+    this.closeTemplate();
   }
 
-  unsubscribeTemplate() {
-    if (this._templateUnsub) {
+  /** The template the subscription renders, from the moment it starts opening. */
+  get subscribedTemplate(): string | null {
+    return this._subscription.status === "closed"
+      ? null
+      : this._subscription.template;
+  }
+
+  /** Whether `id` is still the subscription the card wants results from. */
+  isCurrentSubscription(id: number) {
+    return (
+      this._subscription.status !== "closed" && this._subscription.id === id
+    );
+  }
+
+  closeTemplate() {
+    const subscription = this._subscription;
+    this._subscription = { status: "closed" };
+    this._listenerEntities = [];
+
+    // An `opening` subscription is closed when it settles, in openTemplate.
+    if (subscription.status === "open") {
       try {
-        this._templateUnsub();
+        subscription.unsubscribe();
       } catch (e) {
         console.debug("failed to unsubscribe template", e);
       }
-      this._templateUnsub = null;
     }
-    this._subscribedContent = null;
   }
 
   /**
@@ -213,7 +240,7 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
     const content = this._config.content;
 
     if (!this._config.parse_jinja) {
-      this.unsubscribeTemplate();
+      this.closeTemplate();
       this._templateError = null;
       this._htmlContent = this.withLineBreaks(content);
       this._paint();
@@ -223,7 +250,7 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
     // HA pushes a new result whenever the template's dependencies change, so
     // one subscription per template string is all we ever need. Re-subscribing
     // on each state change (as upstream did) leaks a subscription per update.
-    if (this._subscribedContent === content) {
+    if (this.subscribedTemplate === content) {
       if (repaint) {
         this._paint();
       } else {
@@ -233,7 +260,13 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
       return;
     }
 
-    this.subscribeTemplate(content);
+    // A detached card would only have to close what it opened. Home
+    // Assistant sets `hass` on cards it hasn't attached yet — a conditional
+    // card holds its child detached while hidden — so connectedCallback
+    // opens it instead.
+    if (!this.isConnected) return;
+
+    this.openTemplate(content);
   }
 
   withLineBreaks(html: string) {
@@ -242,19 +275,19 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
       : html;
   }
 
-  subscribeTemplate(content: string) {
+  openTemplate(content: string) {
     if (!this._hass) return;
 
-    this.unsubscribeTemplate();
+    this.closeTemplate();
 
-    const generation = ++this._subscriptionGeneration;
-    this._subscribedContent = content;
+    const id = ++this._lastSubscriptionId;
+    this._subscription = { status: "opening", id, template: content };
 
     this._hass.connection
       .subscribeMessage<TemplateEvent>(
         (msg) => {
-          // A newer subscription superseded this one while it was opening.
-          if (generation !== this._subscriptionGeneration) return;
+          // From a subscription since closed or replaced.
+          if (!this.isCurrentSubscription(id)) return;
 
           if (msg.error) {
             // Warnings (an undefined variable, say) still render; HA sends
@@ -284,24 +317,23 @@ export class TailwindTemplateCard extends TailwindTemplateRenderer {
           report_errors: true,
         },
       )
-      .then((unsub) => {
-        if (generation !== this._subscriptionGeneration || !this._isConnected) {
-          // Superseded or detached before the subscription resolved.
-          unsub();
+      .then((unsubscribe) => {
+        if (!this.isCurrentSubscription(id)) {
+          // Closed or replaced while it was opening.
+          unsubscribe();
           return;
         }
-        this._templateUnsub = unsub;
+        this._subscription = { status: "open", id, template: content, unsubscribe };
       })
       .catch((e) => {
         console.error(`${LOG_PREFIX} failed to subscribe to template`, e);
-        if (generation === this._subscriptionGeneration) {
-          this._subscribedContent = null;
-          // A template that doesn't parse is rejected here rather than
-          // reported through the subscription.
-          this._templateError =
-            (e as { message?: string })?.message ?? String(e);
-          this._paint();
-        }
+        if (!this.isCurrentSubscription(id)) return;
+        // Closed, so the next relevant state change tries again.
+        this._subscription = { status: "closed" };
+        // A template that doesn't parse is rejected here rather than
+        // reported through the subscription.
+        this._templateError = (e as { message?: string })?.message ?? String(e);
+        this._paint();
       });
   }
 

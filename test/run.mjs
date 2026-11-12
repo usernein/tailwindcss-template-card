@@ -283,7 +283,7 @@ const editor = await page.evaluate(async () => {
 
   // A value-changed event from the editor should reach the card config.
   let changed = null
-  document.addEventListener('tailwind-template-card-config-changed', (e) => {
+  el.addEventListener('config-changed', (e) => {
     changed = e.detail.config.content
   })
   if (node) {
@@ -646,10 +646,11 @@ check('bare: false leaves ha-card untouched',
 // config element and calls `setConfig` straight back. Without that round-trip
 // wired up, the failure does not appear at all.
 const leak = await page.evaluate(async () => {
+  // Every listener the editor puts on the document, whatever it is for.
   const counts = { received: 0 }
   const realAdd = document.addEventListener.bind(document)
   document.addEventListener = (type, ...rest) => {
-    if (type === 'tailwind-template-card-config-received') counts.received++
+    counts.received++
     return realAdd(type, ...rest)
   }
 
@@ -687,10 +688,15 @@ const leak = await page.evaluate(async () => {
   await new Promise((r) => setTimeout(r, 800))
 
   document.addEventListener = realAdd
-  return { afterMount, afterTyping: counts.received, changedEvents }
+  return {
+    afterMount,
+    afterTyping: counts.received,
+    changedEvents,
+    channelListeners: el._channel.size
+  }
 })
 
-console.log(`  [data] CONFIG_RECEIVED listeners: ${leak.afterMount} at mount -> ${leak.afterTyping} after 10 keystrokes`)
+console.log(`  [data] document listeners: ${leak.afterMount} at mount -> ${leak.afterTyping} after 10 keystrokes`)
 console.log(`  [data] config-changed round-trips: ${leak.changedEvents}`)
 
 check(
@@ -698,6 +704,8 @@ check(
   leak.afterTyping - leak.afterMount <= 1,
   `mount=${leak.afterMount} after=${leak.afterTyping}`
 )
+check('the editor tree holds one config subscription', leak.channelListeners === 1,
+  `listeners=${leak.channelListeners}`)
 check(
   'rapid keystrokes are debounced into few config updates',
   leak.changedEvents <= 3,
@@ -708,17 +716,16 @@ check(
 // The reported symptom was that the editor degraded "after using it for a
 // while" and needed a page reload, which is what a per-session leak looks like.
 const sessions = await page.evaluate(async () => {
-  const counts = { received: 0, changed: 0 }
+  // Live document listeners, of any type, and the editors' channels.
+  const counts = { live: 0, channels: 0 }
   const realAdd = document.addEventListener.bind(document)
   const realRemove = document.removeEventListener.bind(document)
   document.addEventListener = (type, ...rest) => {
-    if (type === 'tailwind-template-card-config-received') counts.received++
-    if (type === 'tailwind-template-card-config-changed') counts.changed++
+    counts.live++
     return realAdd(type, ...rest)
   }
   document.removeEventListener = (type, ...rest) => {
-    if (type === 'tailwind-template-card-config-received') counts.received--
-    if (type === 'tailwind-template-card-config-changed') counts.changed--
+    counts.live--
     return realRemove(type, ...rest)
   }
 
@@ -735,6 +742,7 @@ const sessions = await page.evaluate(async () => {
     await new Promise((r) => setTimeout(r, 150))
     el.remove()
     await new Promise((r) => setTimeout(r, 150))
+    counts.channels += el._channel.size
   }
 
   await openClose()
@@ -747,13 +755,11 @@ const sessions = await page.evaluate(async () => {
   return { afterOne, afterSix }
 })
 
-console.log(`  [data] live listeners after 1 session:  received=${sessions.afterOne.received} changed=${sessions.afterOne.changed}`)
-console.log(`  [data] live listeners after 6 sessions: received=${sessions.afterSix.received} changed=${sessions.afterSix.changed}`)
+console.log(`  [data] live document listeners after 1 session: ${sessions.afterOne.live}, after 6: ${sessions.afterSix.live}`)
 
 check(
   'closing the editor releases its listeners',
-  sessions.afterSix.received <= sessions.afterOne.received &&
-  sessions.afterSix.changed <= sessions.afterOne.changed,
+  sessions.afterSix.live <= sessions.afterOne.live && sessions.afterSix.channels === 0,
   `1 session -> ${JSON.stringify(sessions.afterOne)}, 6 sessions -> ${JSON.stringify(sessions.afterSix)}`
 )
 
@@ -1341,6 +1347,152 @@ check('editor tabs are buttons', picker.tabIsButton)
 check('the entity picker is Home Assistant\'s ha-entity-picker', picker.sawFirst)
 check('the entity picker receives each new hass', picker.sawSecond)
 check('picking an entity updates the config', picker.entity === 'light.living_room', `entity=${picker.entity}`)
+
+// --- A card given hass while detached still goes live once attached --------
+// Home Assistant sets `hass` on cards it has not attached yet: a conditional
+// card holds its child detached while the condition is false, and keeps
+// passing it state. The fixture's stub pushes a result before the subscribe
+// promise settles; real Home Assistant settles first and pushes after, and
+// stops pushing once unsubscribed. This stub does the same.
+const detached = await page.evaluate(async () => {
+  const live = new Set()
+  const realisticHass = (temperature) => {
+    const hass = window.__makeHass()
+    hass.states = {
+      ...hass.states,
+      'sensor.living_room_temperature': {
+        entity_id: 'sensor.living_room_temperature',
+        state: String(temperature),
+        attributes: {}
+      }
+    }
+    hass.connection = {
+      subscribeMessage: (cb, msg) =>
+        new Promise((resolve) => setTimeout(() => {
+          const sub = { cb, msg }
+          live.add(sub)
+          resolve(() => live.delete(sub))
+          setTimeout(() => live.has(sub) && cb({
+            result: msg.template.replace('TEMP', temperature),
+            listeners: { all: false, domains: [], entities: ['sensor.living_room_temperature'], time: false }
+          }), 5)
+        }, 5))
+    }
+    return hass
+  }
+  const content = '<p id="t">TEMP</p><!-- sensor.living_room_temperature -->'
+  const text = (card) => card.shadowRoot.querySelector('#t')?.textContent ?? null
+
+  // Created, configured and given hass before it is ever attached.
+  const card = document.createElement('tailwind-template-card')
+  card.setConfig({ content })
+  card.hass = realisticHass(20)
+  await new Promise((r) => setTimeout(r, 60))
+  document.getElementById('host').appendChild(card)
+  await window.__waitFor(() => text(card) === '20').catch(() => null)
+  const firstAttach = { text: text(card), live: live.size }
+
+  // Hidden, state changes while hidden, shown again.
+  card.remove()
+  card.hass = realisticHass(21)
+  await new Promise((r) => setTimeout(r, 60))
+  document.getElementById('host').appendChild(card)
+  await window.__waitFor(() => text(card) === '21').catch(() => null)
+  const reattach = { text: text(card), live: live.size }
+
+  card.remove()
+  await new Promise((r) => setTimeout(r, 30))
+  return { firstAttach, reattach, afterRemove: live.size }
+})
+check('a card given hass before it is attached subscribes once attached',
+  detached.firstAttach.text === '20' && detached.firstAttach.live === 1,
+  JSON.stringify(detached.firstAttach))
+check('a card shown again after a hidden state change resubscribes',
+  detached.reattach.text === '21' && detached.reattach.live === 1,
+  JSON.stringify(detached.reattach))
+check('a removed card holds no subscription', detached.afterRemove === 0,
+  `live=${detached.afterRemove}`)
+
+// --- An open editor only listens to its own card ---------------------------
+// A stack's preview renders every child card, and each one is configured
+// while the editor for just one of them is open.
+const crosstalk = await page.evaluate(async () => {
+  const el = document.createElement('tailwind-template-card-config')
+  document.getElementById('host').appendChild(el)
+  const written = []
+  el.addEventListener('config-changed', (e) => {
+    written.push(e.detail.config.content)
+    el.setConfig(e.detail.config)
+  })
+  el.hass = window.__makeHass()
+  el.setConfig({ content: '<p>mine</p>' })
+  const editor = await window.__waitFor(() => el.shadowRoot.querySelector('ha-code-editor'))
+
+  const sibling = document.createElement('tailwind-template-card')
+  document.getElementById('host').appendChild(sibling)
+  sibling.hass = window.__makeHass()
+  sibling.setConfig({ content: '<p>someone else</p>' })
+  await new Promise((r) => setTimeout(r, 200))
+  const shown = editor.value
+
+  // An unrelated option changed in the editor writes back the whole config.
+  const toggle = el.shadowRoot.querySelector('[role="tab"]:nth-child(2)')
+  toggle?.click()
+  const checkbox = await window.__waitFor(() => el.shadowRoot.querySelector('input[type="checkbox"]'))
+  checkbox.click()
+  await window.__waitFor(() => written.length > 0).catch(() => null)
+
+  sibling.remove()
+  el.remove()
+  return { shown, written: written.at(-1) ?? null }
+})
+check('another card being configured does not replace the editor\'s content',
+  crosstalk.shown === '<p>mine</p>', `editor shows ${JSON.stringify(crosstalk.shown)}`)
+check('the editor never writes another card\'s content back',
+  crosstalk.written === '<p>mine</p>', `wrote ${JSON.stringify(crosstalk.written)}`)
+
+// --- A cancelled hold does not swallow the next click ----------------------
+// A long touch the browser takes over (a scroll, its own context menu) ends in
+// `pointercancel`, and no click follows it.
+const hold = await page.evaluate(async () => {
+  const card = document.createElement('tailwind-template-card')
+  document.getElementById('host').appendChild(card)
+  const fired = []
+  card.hass = window.__makeHass()
+  card.setConfig({
+    content: '<div id="h" role="button" tabindex="0">h</div>',
+    actions: [
+      { selector: '#h', type: 'hold', call: "this.dataset.log = (this.dataset.log ?? '') + 'H'" },
+      { selector: '#h', type: 'click', call: "this.dataset.log = (this.dataset.log ?? '') + 'C'" }
+    ]
+  })
+  const target = await window.__waitFor(() => card.shadowRoot.querySelector('#h'))
+  const rect = target.getBoundingClientRect()
+  const opts = { bubbles: true, composed: true, clientX: rect.x + 2, clientY: rect.y + 2 }
+
+  // Hold, released normally: the click that follows belongs to the hold.
+  target.dispatchEvent(new PointerEvent('pointerdown', opts))
+  await new Promise((r) => setTimeout(r, 600))
+  target.dispatchEvent(new PointerEvent('pointerup', opts))
+  target.dispatchEvent(new MouseEvent('click', { ...opts, detail: 1 }))
+  fired.push(target.dataset.log)
+
+  // Hold, then the browser cancels the pointer: no click follows.
+  target.dispatchEvent(new PointerEvent('pointerdown', opts))
+  await new Promise((r) => setTimeout(r, 600))
+  target.dispatchEvent(new PointerEvent('pointercancel', opts))
+
+  // Later, the keyboard activates it.
+  target.focus()
+  target.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, composed: true }))
+  fired.push(target.dataset.log)
+
+  card.remove()
+  return fired
+})
+check('a completed hold suppresses its own click', hold[0] === 'H', `log=${hold[0]}`)
+check('a cancelled hold does not swallow the next keyboard click',
+  hold[1] === 'HHC', `log=${hold[1]}`)
 
 check('no console errors', consoleErrors.length === 0, consoleErrors.slice(0, 3).join(' | '))
 

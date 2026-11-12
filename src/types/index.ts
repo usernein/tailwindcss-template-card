@@ -39,16 +39,6 @@ export type Action = {
   type: string
 }
 
-export enum ConfigActionTypes {
-  SET_CONFIG
-}
-
-export type ConfigReducerAction = {
-  action_type: ConfigActionTypes
-  dispatch_event: boolean
-  payload: Partial<ConfigState> | object
-}
-
 type PluginOptions = {
   enabled: boolean
   /** @deprecated daisyUI is compiled into the card; no CDN fetch is made. */
