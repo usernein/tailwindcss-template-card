@@ -1,4 +1,6 @@
 {
-  "name": "TailwindCSS Template Card",
-  "render_readme": true
+  "name": "Tailwind Template Card",
+  "render_readme": true,
+  "filename": "tailwind-template-card.js",
+  "homeassistant": "2024.4.0"
 }

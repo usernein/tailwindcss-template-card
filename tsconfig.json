@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "inlineSourceMap": true,
     "target": "ES2020",
     "useDefineForClassFields": true,
     "module": "ESNext",
@@ -10,7 +9,6 @@
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
-    "allowJs": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
@@ -22,15 +20,20 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "baseUrl": "./src",
+    /* No `baseUrl`: it is deprecated, and without it these resolve relative
+       to this file. */
     "paths": {
-      "@/*": ["../*"],
-      "@components/*": ["./components/*"],
-      "@pages/*": ["./pages/*"],
-      "@store/*": ["./store/*"],
-      "@elements/*": ["./elements/*"],
-      "@types": ["./types"],
-      "@utils/*": ["./utils/*"],
+      "@/*": ["./*"],
+      "@components/*": ["./src/components/*"],
+      "@pages/*": ["./src/pages/*"],
+      "@store/*": ["./src/store/*"],
+      "@elements/*": ["./src/elements/*"],
+      "@types": ["./src/types"],
+      "@utils/*": ["./src/utils/*"],
+      /* Resolve React types through preact/compat so React-typed libraries
+         (react-icons) typecheck against Preact's JSX. */
+      "react": ["./node_modules/preact/compat/"],
+      "react-dom": ["./node_modules/preact/compat/"]
     }
   },
   "include": ["src"],

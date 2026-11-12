@@ -1,3 +1,10 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/*
+ * Build-time stylesheet for the card's own configuration UI.
+ *
+ * The user's card content is styled separately, at runtime, by
+ * `src/styles/TailwindEngine.ts`. This sheet only covers the editor chrome,
+ * which is built from daisyUI components.
+ */
+@import "tailwindcss";
+@plugin "daisyui";
+@source "./";

@@ -1,17 +1,32 @@
-name: Validate plugin
-
+name: validation
 on:
   push:
   pull_request:
   schedule:
-    - cron:  '0 0 * * *'
-
+    - cron: "0 4 * * 1"
 jobs:
-  validate:
-    runs-on: "ubuntu-latest"
+  hacs:
+    runs-on: ubuntu-latest
     steps:
-        - uses: "actions/checkout@v2"
-        - name: HACS Action
-          uses: "hacs/action@main"
-          with:
-            category: "plugin"
+      - uses: actions/checkout@v7
+      - name: HACS validation
+        # HACS documents tracking main; its last tagged release is from 2022.
+        uses: hacs/action@main
+        with:
+          category: plugin
+          ignore: brands
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npx tsc --noEmit
+      - run: npx playwright install --with-deps chromium
+      - name: Unit and browser tests
+        run: npm test

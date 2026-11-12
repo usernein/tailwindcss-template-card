@@ -14,6 +14,19 @@ export interface CustomCard {
   preview: boolean
 }
 
+/** Payload pushed by Home Assistant's `render_template` websocket command. */
+export type TemplateEvent = {
+  result?: string
+  error?: string
+  level?: string
+  listeners?: {
+    all: boolean
+    domains: string[]
+    entities: string[]
+    time: boolean
+  }
+}
+
 export type Binding = {
   bind: string
   selector: string
@@ -26,38 +39,39 @@ export type Action = {
   type: string
 }
 
-export enum ConfigActionTypes {
-  SET_CONFIG
+type PluginOptions = {
+  enabled: boolean
+  /** @deprecated daisyUI is compiled into the card; no CDN fetch is made. */
+  url?: string
+  /** `auto` follows Home Assistant; otherwise `<scheme> - <daisyUI theme>`. */
+  theme?: string
 }
 
-export type ConfigReducerAction = {
-  action_type: ConfigActionTypes
-  dispatch_event: boolean
-  payload: Partial<ConfigState> | object
+type DaisyUIOptions = {
+  overrideCardBackground: boolean
+  /** daisyUI theme list, e.g. `light --default, dark --prefersdark`. */
+  themes?: string
 }
-
-export enum CodeEditorOptionsEnum {
-  ACE = 'Ace',
-  TEXTAREA = 'Textarea',
-  CODEMIRROR_DEV = 'CodeMirror_dev'
-}
-
-type PluginOptions = { enabled: boolean; url?: string; theme?: string }
-
-type DaisyUIOptions = { overrideCardBackground: boolean }
 
 export type ConfigState = {
   entity: string
   ignore_line_breaks: boolean
   always_update: boolean
+  /**
+   * Strip Home Assistant's `ha-card` chrome — background, border, shadow and
+   * radius — so the card's own markup provides the entire surface.
+   */
+  bare: boolean
   content: string
   entities: string[]
   parse_jinja: boolean
   plugins: {
-    daisyui: PluginOptions & DaisyUIOptions,
-    tailwindElements: PluginOptions
+    daisyui: PluginOptions & DaisyUIOptions
+    /** @deprecated Never implemented; accepted so old configs still load. */
+    tailwindElements?: PluginOptions
   }
-  code_editor: CodeEditorOptionsEnum
+  /** @deprecated Ignored; Home Assistant's editor is always used. */
+  code_editor?: string
   bindings: Binding[]
   actions: Action[]
   debounceChangePeriod: number

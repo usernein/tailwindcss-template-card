@@ -1,12 +1,27 @@
 import { ConfigContext } from '@store/ConfigContext'
+import { HassContext, hassDarkMode } from '@store/HassContext'
+import { resolveTheme } from '@components/HaCard'
 import { useContext } from 'preact/compat'
 import { FiMoon, FiSun } from 'react-icons/fi'
 
+/**
+ * Pins the card to light or dark; the Plugins tab can set it back to
+ * following Home Assistant.
+ *
+ * The icon follows the card's resolved theme. It used Tailwind's `dark:`
+ * variant, which in v4 tracks the operating system, not the card.
+ */
 export function DarkModeToggle () {
   const { config, updateConfig } = useContext(ConfigContext)
+  const hass = useContext(HassContext)
+  const { scheme } = resolveTheme(
+    config.plugins.daisyui.theme,
+    hassDarkMode(hass)
+  )
+  const isDark = scheme === 'dark'
 
-  const setTheme = (scheme: 'dark' | 'light') => {
-    const themeName = scheme === 'dark' ? 'dark - dark' : 'light - light'
+  const setTheme = (next: 'dark' | 'light') => {
+    const themeName = next === 'dark' ? 'dark - dark' : 'light - light'
     updateConfig({
       plugins: {
         ...config.plugins,
@@ -14,14 +29,17 @@ export function DarkModeToggle () {
       }
     })
   }
+
   return (
     <div className='flex-grow flex justify-end text-base-content text-xl'>
-      <div className='hidden dark:block hover:scale-110 active:scale-90 transition-all' onClick={() => setTheme('light')}>
-        <FiSun />
-      </div>
-      <div className='block dark:hidden hover:scale-110 active:scale-95 transition-all' onClick={() => setTheme('dark')}>
-        <FiMoon />
-      </div>
+      <button
+        type='button'
+        aria-label={isDark ? 'Use the light theme' : 'Use the dark theme'}
+        className='hover:scale-110 active:scale-90 transition-all'
+        onClick={() => setTheme(isDark ? 'light' : 'dark')}
+      >
+        {isDark ? <FiSun /> : <FiMoon />}
+      </button>
     </div>
   )
 }

@@ -1,24 +1,22 @@
 import { ConfigContext } from '@store/ConfigContext'
+import { HassContext, hassDarkMode } from '@store/HassContext'
+import { resolveTheme } from '@components/HaCard'
 import clsx from 'clsx'
-import { useMemo, PropsWithChildren, useContext } from 'preact/compat'
+import { PropsWithChildren, useContext } from 'preact/compat'
 
+/** Themes the editor the same way the card itself is themed. */
 export function WithDaisyUitheme ({
   className,
   children
 }: PropsWithChildren<{ className?: string }>) {
   const { config } = useContext(ConfigContext)
+  const hass = useContext(HassContext)
 
-  const daisyUiTheme = useMemo(
-    () => config.plugins.daisyui.theme ?? 'inherit',
-    [config.plugins.daisyui.theme]
+  const { scheme, attributes } = resolveTheme(
+    config.plugins.daisyui.theme,
+    hassDarkMode(hass)
   )
 
-  // split string by " - "
-  const [scheme, theme] = daisyUiTheme.split(' - ')
-
-  const attributes = ['inherit', 'auto'].includes(daisyUiTheme)
-    ? {}
-    : { 'data-theme': theme }
   return (
     <div {...attributes} className={clsx(scheme, className)}>
       {children}

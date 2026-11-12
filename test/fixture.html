@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+  <head><meta charset="utf-8" /><title>card harness</title></head>
+  <body>
+    <div id="host"></div>
+    <script>
+      // `?no-registry` leaves `customCards` undefined, as a dashboard does
+      // when this is the first custom card to load.
+      if (!location.search.includes('no-registry')) window.customCards = []
+      window.__ready = false
+
+      // Polls until `fn` returns something truthy, instead of a fixed sleep.
+      window.__waitFor = async (fn, timeout = 3000) => {
+        const end = performance.now() + timeout
+        while (performance.now() < end) {
+          const value = fn()
+          if (value) return value
+          await new Promise((r) => setTimeout(r, 20))
+        }
+        throw new Error('timed out waiting for ' + fn)
+      }
+    </script>
+    <script type="module" src="/dist/tailwind-template-card.js"></script>
+    <script type="module">
+      // Minimal Home Assistant stub. `render_template` echoes the template
+      // back so the test controls the exact HTML the card renders.
+      const states = {
+        'sensor.living_room_temperature': {
+          entity_id: 'sensor.living_room_temperature',
+          state: '24.4',
+          attributes: { unit_of_measurement: '°C' }
+        },
+        'light.living_room': {
+          entity_id: 'light.living_room',
+          state: 'on',
+          attributes: { friendly_name: 'Living Room' }
+        }
+      }
+
+      window.__subscriptions = { opened: 0, closed: 0 }
+      // Every render_template subscription, newest last, so a test can push
+      // a fresh result the way Home Assistant does when state changes.
+      window.__templates = []
+
+      window.__makeHass = () => ({
+        states,
+        services: { light: { toggle: {} } },
+        callService: (domain, service, data) => {
+          window.__lastServiceCall = { domain, service, data }
+          return Promise.resolve()
+        },
+        connection: {
+          subscribeMessage: (cb, msg) => {
+            window.__subscriptions.opened++
+            window.__templates.push({ cb, msg })
+            queueMicrotask(() =>
+              cb({
+                result: msg.template,
+                listeners: {
+                  all: false,
+                  domains: [],
+                  entities: ['sensor.living_room_temperature'],
+                  time: false
+                }
+              })
+            )
+            return Promise.resolve(() => {
+              window.__subscriptions.closed++
+            })
+          }
+        }
+      })
+
+      window.__ready = true
+    </script>
+  </body>
+</html>

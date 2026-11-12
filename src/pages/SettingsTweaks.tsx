@@ -1,13 +1,8 @@
 import { TweakToggle } from '@components/TweakToggle'
-import { CodeEditorOptions } from '@components/CodeEditorOptions'
 import { TweakRangeInput } from '@components/TweakRangeInput'
 import { CardEntityConfig } from '@components/CardEntityConfig'
 
-export const SettingsTweaks = ({
-  inHiddenMode
-}: {
-  inHiddenMode?: boolean
-}) => {
+export const SettingsTweaks = () => {
   return (
     <div className='w-full flex flex-col gap-3'>
       <div className='collapse collapse-open bg-base-200'>
@@ -19,14 +14,8 @@ export const SettingsTweaks = ({
           <TweakToggle label='Ignore line breaks' tweak='ignore_line_breaks' />
           <TweakToggle label='Always update' tweak='always_update' />
           <TweakToggle label='Parse Jinja templates' tweak='parse_jinja' />
-          <CodeEditorOptions inHiddenMode={inHiddenMode} />
-          <TweakRangeInput
-          // label='Debounce change period'
-          // tweak='debounceChangePeriod'
-          // min={50}
-          // max={1000}
-          // step={50}
-          />
+          <TweakToggle label='Bare card (no Home Assistant card background)' tweak='bare' />
+          <TweakRangeInput />
         </div>
       </div>
     </div>

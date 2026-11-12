@@ -1,6 +1,6 @@
-import { TweakPluginInput } from '@components/TweakPluginInput'
 import { TweakPluginToggle } from '@components/TweakPluginToggle'
 import { ConfigContext } from '@store/ConfigContext'
+import { FOLLOW_HA_THEME } from '@store/configDefaults'
 import { useContext } from 'preact/compat'
 
 export const SettingsPlugins = () => {
@@ -11,14 +11,7 @@ export const SettingsPlugins = () => {
       <div className='collapse collapse-open overflow-visible bg-base-200'>
         <div className='collapse-title text-md font-medium'>Plugins</div>
         <div className='collapse-content'>
-          <div className='w-full flex flex-row flex-wrap justify-between'>
-            <TweakPluginToggle label='DaisyUI' plugin='daisyui' />
-            <TweakPluginToggle
-              label='Tailwind-Elements'
-              plugin='tailwindElements'
-              disabled
-            />
-          </div>
+          <TweakPluginToggle label='DaisyUI' plugin='daisyui' />
         </div>
       </div>
 
@@ -27,18 +20,12 @@ export const SettingsPlugins = () => {
           Plugins settings
         </div>
         <div className='collapse-content'>
-          <TweakPluginInput
-            label='DaisyUI CSS URL'
-            plugin='daisyui'
-            option='url'
-          />
-
           <label className='label flex flex-col justify-start items-start'>
             <span className='label-text-alt flex text-base-content'>
               DaisyUI theme
             </span>
             <select
-              value={config.plugins.daisyui.theme}
+              value={config.plugins.daisyui.theme ?? FOLLOW_HA_THEME}
               onChange={(e: Event) =>
                 updateConfig({
                   plugins: {
@@ -52,6 +39,9 @@ export const SettingsPlugins = () => {
               }
               className='select w-full text-base-content'
             >
+              <option value={FOLLOW_HA_THEME}>
+                Follow Home Assistant (light or dark)
+              </option>
               {Object.values(DAISYUI_THEMES).map(({ theme, scheme }) => (
                 <option key={theme} value={`${scheme} - ${theme}`}>
                   {scheme} - {theme}

@@ -1,74 +1,49 @@
-import { PropsWithChildren, StateUpdater, useState } from 'preact/compat'
+import { useState } from 'preact/hooks'
 import clsx from 'clsx'
 import { SettingsTweaks } from '@pages/SettingsTweaks'
 import { SettingsCardContent } from '@pages/SettingsCardContent'
 import { SettingsPlugins } from '@pages/SettingsPlugins'
 import { WithDaisyUitheme } from './WithDaisyUitheme'
 import { DarkModeToggle } from './DarkModeToggle'
-// import { SettingsAbout } from '@pages/SettingsAbout'
 
-type ActiveTabState = {
-  index: number
-  inHiddenMode: boolean
-}
-const ConfigTab = ({
-  activeState,
-  tabKey,
-  children
-}: PropsWithChildren & {
-  activeState: [ActiveTabState, StateUpdater<ActiveTabState>]
-  tabKey: number
-}) => {
-  const [activeTab, setActiveTab] = activeState
-  return (
-    <div
-      className={clsx(
-        'tab',
-        'tab-bordered',
-        activeTab.index == tabKey && 'tab-active'
-      )}
-      onClick={() => setActiveTab({ index: tabKey, inHiddenMode: false })}
-      onDblClick={() => setActiveTab({ index: tabKey, inHiddenMode: true })}
-    >
-      {children}
-    </div>
-  )
-}
+const TABS = [
+  { label: 'Content', Page: SettingsCardContent },
+  { label: 'Tweaks', Page: SettingsTweaks },
+  { label: 'Plugins', Page: SettingsPlugins }
+]
 
 export function HaCardConfig () {
-  const activeState = useState({
-    index: 0,
-    inHiddenMode: false
-  } as ActiveTabState)
+  const [active, setActive] = useState(0)
+  const { Page } = TABS[active]
 
   return (
     <WithDaisyUitheme className='w-full flex flex-col justify-center items-center rounded-xl bg-base-300 p-4'>
       <div className='form-control w-full gap-3 justify-evenly'>
         <div class='flex flex-row'>
           <div className='flex-grow'></div>
-          <div className='tabs flex justify-center flex-grow'>
-            <ConfigTab activeState={activeState} tabKey={0}>
-              Content
-            </ConfigTab>
-            <ConfigTab activeState={activeState} tabKey={1}>
-              Tweaks
-            </ConfigTab>
-            <ConfigTab activeState={activeState} tabKey={2}>
-              Plugins
-            </ConfigTab>
-            {/* <ConfigTab activeState={activeState} tabKey={3}>
-                        About
-                      </ConfigTab> */}
+          {/* Buttons, not clickable divs, so the tabs are keyboard reachable. */}
+          <div role='tablist' className='tabs flex justify-center flex-grow'>
+            {TABS.map(({ label }, index) => (
+              <button
+                key={label}
+                type='button'
+                role='tab'
+                aria-selected={active === index}
+                className={clsx(
+                  'tab',
+                  'tab-bordered',
+                  active === index && 'tab-active'
+                )}
+                onClick={() => setActive(index)}
+              >
+                {label}
+              </button>
+            ))}
           </div>
           <DarkModeToggle />
         </div>
 
-        {activeState[0].index == 0 && <SettingsCardContent />}
-        {activeState[0].index == 1 && (
-          <SettingsTweaks inHiddenMode={activeState[0].inHiddenMode} />
-        )}
-        {activeState[0].index == 2 && <SettingsPlugins />}
-        {/* {activeState[0].index == 3 && <SettingsAbout />} */}
+        <Page />
       </div>
     </WithDaisyUitheme>
   )

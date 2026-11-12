@@ -1,25 +1,10 @@
 import { useContext } from 'preact/compat'
 import { ConfigContext } from '@store/ConfigContext'
-import { useConfigMemo } from '@store/useConfigMemo'
-// import { ConfigState } from '@types'
 
-export function TweakRangeInput (
-  // {
-  //   label,
-  //   tweak,
-  //   min,
-  //   max,
-  //   steps
-  // }: {
-  //   label: string
-  //   tweak: keyof ConfigState
-  //   min: number
-  //   max: number
-  //   steps: number
-  // }
-) {
-  const { updateConfig } = useContext(ConfigContext)
-  const { debounceChangePeriod } = useConfigMemo('debounceChangePeriod')
+/** How long the editor waits after a keystroke before updating the card. */
+export function TweakRangeInput () {
+  const { config, updateConfig } = useContext(ConfigContext)
+  const { debounceChangePeriod } = config
 
   return (
     <div className='form-control p-2 bg-base-100 font-semibold rounded-[--rounded-box]'>
